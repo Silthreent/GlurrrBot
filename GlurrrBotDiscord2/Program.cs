@@ -42,7 +42,7 @@ namespace GlurrrBotDiscord2
             }
             catch(Exception e)
             {
-                Console.WriteLine("wtf happens");
+                Console.WriteLine("wtf happened");
                 Console.WriteLine(e.Message);
             }
 
@@ -59,6 +59,14 @@ namespace GlurrrBotDiscord2
             if(e.Message.Content.ToLower().Contains("glurrr") || e.Message.Content.ToLower().Contains("glibba"))
             {
                 Console.WriteLine("Glurrr awakened");
+                CommandHandler.japanMode = false;
+                await MessageCreated(e);
+            }
+
+            if(e.Message.Content.Contains("ぐるる"))
+            {
+                Console.WriteLine("グルーラーが目を覚ました");
+                CommandHandler.japanMode = true;
                 await MessageCreated(e);
             }
         }
