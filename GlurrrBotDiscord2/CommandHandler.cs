@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.EventArgs;
+using GlurrrBotDiscord2.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace GlurrrBotDiscord2
         public static async Task handleCommand(MessageCreateEventArgs args)
         {
             string msg = args.Message.Content.ToLower();
+
+            if(msg.Contains("randome"))
+            {
+                await Randome.runCommand(args);
+            }
 
             if(msg.Contains("anime"))
             {
