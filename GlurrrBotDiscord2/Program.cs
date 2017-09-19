@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
@@ -56,6 +57,19 @@ namespace GlurrrBotDiscord2
 
         private static async Task onMessageCreated(MessageCreateEventArgs e)
         {
+            if(e.Message.Content.ToLower() == "/leave")
+            {
+                var embed = new DiscordEmbedBuilder()
+                {
+                    Title = e.Author.Username + " has left",
+                    Description = e.Author.Username + " has left the Discord and would like everyone to know they did. They are very triggered.",
+                    Color = DiscordColor.Rose,
+                };
+
+                await e.Channel.SendMessageAsync("", false, embed);
+                return;
+            }
+
             if(e.Message.Content.ToLower().Contains("glurrr") || e.Message.Content.ToLower().Contains("glibba"))
             {
                 Console.WriteLine("Glurrr awakened");
