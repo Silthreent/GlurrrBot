@@ -1,4 +1,5 @@
 ﻿using DSharpPlus;
+using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,6 +12,8 @@ namespace GlurrrBotDiscord2
     class Program
     {
         static DiscordClient discord;
+
+        static event AsyncEventHandler<MessageCreateEventArgs> MessageCreated;
 
         static void Main(string[] args)
         {
@@ -43,17 +46,21 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine(e.Message);
             }
 
-            discord.MessageCreated += async e =>
-            {
-                if(e.Message.Content.ToLower().StartsWith("ping"))
-                {
-                    await e.Message.RespondAsync("pong!");
-                }
-            };
+            discord.MessageCreated += onMessageCreated;
+            MessageCreated += CommandHandler.handleCommand;
 
             await discord.ConnectAsync();
 
             await Task.Delay(-1);
+        }
+
+        private static async Task onMessageCreated(MessageCreateEventArgs e)
+        {
+            if(e.Message.Content.ToLower().Contains("glurrr") || e.Message.Content.ToLower().Contains("glibba"))
+            {
+                Console.WriteLine("Glurrr awakened");
+                await MessageCreated(e);
+            }
         }
     }
 }
