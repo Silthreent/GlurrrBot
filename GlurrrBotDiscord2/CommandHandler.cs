@@ -26,6 +26,12 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine("Running anime");
                 await args.Message.RespondAsync("I love 2d");
             }
+
+            if(msg.Contains("picture"))
+            {
+                Console.WriteLine("Running pictures");
+                await AnimePicture.runCommand(args);
+            }
         }
     }
 }

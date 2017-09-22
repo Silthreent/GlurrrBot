@@ -63,7 +63,7 @@ namespace GlurrrBotDiscord2
                 {
                     Title = e.Author.Username + " has left",
                     Description = e.Author.Username + " has left the Discord and would like everyone to know they did. They are very triggered.",
-                    Color = DiscordColor.Rose,
+                    Color = DiscordColor.DarkRed,
                 };
 
                 await e.Channel.SendMessageAsync("", false, embed);
