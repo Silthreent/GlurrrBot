@@ -2,6 +2,7 @@
 using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace GlurrrBotDiscord2.Commands
 {
     public class Randome
     {
-        static Dictionary<DiscordUser, List<string>> randomeList = new Dictionary<DiscordUser, List<string>>();
+        static Dictionary<string, List<string>> randomeList = new Dictionary<string, List<string>>();
 
         public static async Task runCommand(MessageCreateEventArgs args)
         {
@@ -39,23 +40,31 @@ namespace GlurrrBotDiscord2.Commands
                 }
 
                 // Add it to their list, if they don't have a list yet create them one first
-                if(!randomeList.ContainsKey(args.Author))
+                if(!randomeList.ContainsKey(args.Author.Username))
                 {
                     Console.WriteLine("Author entry did not exist");
-                    randomeList.Add(args.Author, new List<string>());
+                    randomeList.Add(args.Author.Username, new List<string>());
                 }
 
-                randomeList[args.Author].Add(splitString[1].ToLower());
+                randomeList[args.Author.Username].Add(splitString[1].ToLower());
 
 
                 await displayRandome(args.Message.Channel);
             }
 
+        // Saves the Randome list to file to retrieve later
+        // TODO: Save randome list by file by name, can retrieve by name
             if(commandFound == false && msg.Contains("save"))
             {
                 commandFound = true;
 
+                await saveList(args.Channel);
+            }
 
+            if(commandFound == false && msg.Contains("load"))
+            {
+                commandFound = true;
+                await loadList(args.Channel);
             }
 
         // Removes a specified listing from either your own or the first one found
@@ -82,11 +91,11 @@ namespace GlurrrBotDiscord2.Commands
                 if(msg.Contains("from my") || msg.Contains("じぶんの"))
                 {
                     // Look for the specified object from their own list
-                    if(randomeList.ContainsKey(args.Author))
+                    if(randomeList.ContainsKey(args.Author.Username))
                     {
-                        if(randomeList[args.Author].Contains(splitString[1]))
+                        if(randomeList[args.Author.Username].Contains(splitString[1]))
                         {
-                            randomeList[args.Author].Remove(splitString[1]);
+                            randomeList[args.Author.Username].Remove(splitString[1]);
                             Console.WriteLine("Deleted " + splitString[1] + " from " + args.Author.Username);
                             if(!CommandHandler.japanMode)
                                 await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + args.Author.Username + "'s list");
@@ -117,7 +126,7 @@ namespace GlurrrBotDiscord2.Commands
                 else
                 {
                     // Look for the specified object in all lists
-                    foreach(DiscordUser i in randomeList.Keys)
+                    foreach(string i in randomeList.Keys)
                     {
                         if(randomeList[i].Contains(splitString[1]))
                         {
@@ -147,11 +156,11 @@ namespace GlurrrBotDiscord2.Commands
 
                 List<string> rollOptions = new List<string>();
 
-                foreach(DiscordUser i in randomeList.Keys)
+                foreach(string i in randomeList.Keys)
                 {
                     foreach(string s in randomeList[i])
                     {
-                        rollOptions.Add(i.Username + "'s choice of " + s);
+                        rollOptions.Add(i + "'s choice of " + s);
                     }
                 }
 
@@ -217,9 +226,9 @@ namespace GlurrrBotDiscord2.Commands
 
             Console.WriteLine("Displaying results");
             string builder = "";
-            foreach(DiscordUser i in randomeList.Keys)
+            foreach(string i in randomeList.Keys)
             {
-                builder += i.Username + " - {";
+                builder += i + " - {";
                 foreach(string s in randomeList[i])
                 {
                     builder += s + ", ";
@@ -230,6 +239,67 @@ namespace GlurrrBotDiscord2.Commands
 
             Console.WriteLine(builder);
             await channel.SendMessageAsync(builder);
+        }
+
+        static async Task saveList(DiscordChannel channel)
+        {
+            Console.WriteLine("Saving Randome list");
+            await channel.SendMessageAsync("Saving Randome lists...");
+
+            using(StreamWriter file = new StreamWriter(@"randomelists\randomelist.txt"))
+            {
+                foreach(string i in randomeList.Keys)
+                {
+                    await file.WriteLineAsync("#" + i);
+                    foreach(string c in randomeList[i])
+                    {
+                        await file.WriteLineAsync(c);
+                    }
+                }
+            }
+
+            Console.WriteLine("Finished saving Randome list");
+            await channel.SendMessageAsync("Finished saving Randome lists");
+        }
+
+        static async Task loadList(DiscordChannel channel)
+        {
+            Console.WriteLine("Loading Randome list");
+            await channel.SendMessageAsync("Loading Randome lists...");
+
+            string line;
+            string currentUser = "";
+
+            try
+            {
+                using(StreamReader file = new StreamReader(@"randomelists\randomelist.txt"))
+                {
+                    while((line = await file.ReadLineAsync()) != null)
+                    {
+                        if(line[0] == '#')
+                        {
+                            currentUser = line.Substring(1);
+                            if(!randomeList.ContainsKey(currentUser))
+                            {
+                                Console.WriteLine("Author entry did not exist");
+                                randomeList.Add(currentUser, new List<string>());
+                            }
+                        }
+                        else
+                        {
+                            randomeList[currentUser].Add(line);
+                        }
+                    }
+                }
+            }
+            catch(FileNotFoundException e)
+            {
+                Console.WriteLine("File did not exist");
+                Console.WriteLine(e.Message);
+            }
+
+            Console.WriteLine("Finished loading Randome list");
+            await channel.SendMessageAsync("Finished loading Randome lists");
         }
     }
 }
