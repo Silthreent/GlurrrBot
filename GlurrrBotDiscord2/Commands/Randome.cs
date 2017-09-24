@@ -61,10 +61,13 @@ namespace GlurrrBotDiscord2.Commands
                 await saveList(args.Channel);
             }
 
+        // Loads the Randome list from file
             if(commandFound == false && msg.Contains("load"))
             {
                 commandFound = true;
+
                 await loadList(args.Channel);
+                await displayRandome(args.Channel);
             }
 
         // Removes a specified listing from either your own or the first one found
@@ -226,19 +229,28 @@ namespace GlurrrBotDiscord2.Commands
 
             Console.WriteLine("Displaying results");
             string builder = "";
+
+            var embed = new DiscordEmbedBuilder()
+            {
+                Title = "Randome List",
+                Color = DiscordColor.Violet,
+            };
+
             foreach(string i in randomeList.Keys)
             {
-                builder += i + " - {";
+                //builder += "**" + i + "** - {";
                 foreach(string s in randomeList[i])
                 {
                     builder += s + ", ";
                 }
                 builder = builder.Remove(builder.Length - 2);
-                builder += "}\n";
+                embed.AddField(i, builder, true);
+                //builder += "}\n";
             }
 
+
             Console.WriteLine(builder);
-            await channel.SendMessageAsync(builder);
+            await channel.SendMessageAsync("", false, embed);
         }
 
         static async Task saveList(DiscordChannel channel)
@@ -269,6 +281,8 @@ namespace GlurrrBotDiscord2.Commands
 
             string line;
             string currentUser = "";
+
+            randomeList.Clear();
 
             try
             {
