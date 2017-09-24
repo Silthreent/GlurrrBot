@@ -10,7 +10,7 @@ namespace GlurrrBotDiscord2.Commands
 {
     public class Randome
     {
-        static Dictionary<string, List<string>> randomeList = new Dictionary<string, List<string>>();
+        static Dictionary<DiscordUser, List<string>> randomeList = new Dictionary<DiscordUser, List<string>>();
 
         public static async Task runCommand(MessageCreateEventArgs args)
         {
@@ -39,16 +39,23 @@ namespace GlurrrBotDiscord2.Commands
                 }
 
                 // Add it to their list, if they don't have a list yet create them one first
-                if(!randomeList.ContainsKey(args.Author.Username))
+                if(!randomeList.ContainsKey(args.Author))
                 {
                     Console.WriteLine("Author entry did not exist");
-                    randomeList.Add(args.Message.Author.Username, new List<string>());
+                    randomeList.Add(args.Author, new List<string>());
                 }
 
-                randomeList[args.Message.Author.Username].Add(splitString[1].ToLower());
+                randomeList[args.Author].Add(splitString[1].ToLower());
 
 
                 await displayRandome(args.Message.Channel);
+            }
+
+            if(commandFound == false && msg.Contains("save"))
+            {
+                commandFound = true;
+
+
             }
 
         // Removes a specified listing from either your own or the first one found
@@ -75,11 +82,11 @@ namespace GlurrrBotDiscord2.Commands
                 if(msg.Contains("from my") || msg.Contains("じぶんの"))
                 {
                     // Look for the specified object from their own list
-                    if(randomeList.ContainsKey(args.Author.Username))
+                    if(randomeList.ContainsKey(args.Author))
                     {
-                        if(randomeList[args.Author.Username].Contains(splitString[1]))
+                        if(randomeList[args.Author].Contains(splitString[1]))
                         {
-                            randomeList[args.Author.Username].Remove(splitString[1]);
+                            randomeList[args.Author].Remove(splitString[1]);
                             Console.WriteLine("Deleted " + splitString[1] + " from " + args.Author.Username);
                             if(!CommandHandler.japanMode)
                                 await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + args.Author.Username + "'s list");
@@ -110,7 +117,7 @@ namespace GlurrrBotDiscord2.Commands
                 else
                 {
                     // Look for the specified object in all lists
-                    foreach(string i in randomeList.Keys)
+                    foreach(DiscordUser i in randomeList.Keys)
                     {
                         if(randomeList[i].Contains(splitString[1]))
                         {
@@ -140,11 +147,11 @@ namespace GlurrrBotDiscord2.Commands
 
                 List<string> rollOptions = new List<string>();
 
-                foreach(string i in randomeList.Keys)
+                foreach(DiscordUser i in randomeList.Keys)
                 {
                     foreach(string s in randomeList[i])
                     {
-                        rollOptions.Add(i + "'s choice of " + s);
+                        rollOptions.Add(i.Username + "'s choice of " + s);
                     }
                 }
 
@@ -210,9 +217,9 @@ namespace GlurrrBotDiscord2.Commands
 
             Console.WriteLine("Displaying results");
             string builder = "";
-            foreach(string i in randomeList.Keys)
+            foreach(DiscordUser i in randomeList.Keys)
             {
-                builder += i + " - {";
+                builder += i.Username + " - {";
                 foreach(string s in randomeList[i])
                 {
                     builder += s + ", ";
