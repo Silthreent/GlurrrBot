@@ -258,7 +258,7 @@ namespace GlurrrBotDiscord2.Commands
             Console.WriteLine("Saving Randome list");
             await channel.SendMessageAsync("Saving Randome lists...");
 
-            using(StreamWriter file = new StreamWriter(@"randomelists\randomelist.txt"))
+            using(StreamWriter file = new StreamWriter(@"randomelists/randomelist.txt"))
             {
                 foreach(string i in randomeList.Keys)
                 {
@@ -286,7 +286,7 @@ namespace GlurrrBotDiscord2.Commands
 
             try
             {
-                using(StreamReader file = new StreamReader(@"randomelists\randomelist.txt"))
+                using(StreamReader file = new StreamReader(@"randomelists/randomelist.txt"))
                 {
                     while((line = await file.ReadLineAsync()) != null)
                     {
