@@ -12,8 +12,8 @@ namespace GlurrrBotDiscord2
 {
     class Program
     {
-        public const ulong MATT_ID = 134852512611172352;
-        public const ulong DAVID_ID = 135498846494130177;
+        //public const ulong MATT_ID = 134852512611172352;
+        //public const ulong DAVID_ID = 135498846494130177;
 
         static DiscordClient discord;
 
@@ -51,10 +51,9 @@ namespace GlurrrBotDiscord2
             }
 
             discord.MessageCreated += onMessageCreated;
-            MessageCreated += CommandHandler.handleCommand;
+            MessageCreated += CommandHandler.messageCreatedCommand;
 
-            //var david = discord.GetUserAsync(135498846494130177).Result;
-            discord.PresenceUpdated += onUserUpdated;
+            discord.PresenceUpdated += CommandHandler.presenceUpdatedCommand;
 
             await discord.ConnectAsync();
 
@@ -88,19 +87,6 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine("グルーラーが目を覚ました");
                 CommandHandler.japanMode = true;
                 await MessageCreated(e);
-            }
-        }
-
-        private static async Task onUserUpdated(PresenceUpdateEventArgs args)
-        {
-            Console.WriteLine(args.Member.Username + " : Before - " + args.PresenceBefore.Status + " : After - " + args.Member.Presence.Status);
-            if(args.Member.Id == DAVID_ID)
-            {
-                if(args.PresenceBefore.Status != UserStatus.Online && args.Member.Presence.Status == UserStatus.Online)
-                {
-                    Console.WriteLine("David play Doki Doki");
-                    await args.Guild.Channels[0].SendMessageAsync(args.Member.Mention + " play Doki Doki");
-                }
             }
         }
     }
