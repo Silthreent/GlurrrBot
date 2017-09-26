@@ -238,16 +238,14 @@ namespace GlurrrBotDiscord2.Commands
 
             foreach(string i in randomeList.Keys)
             {
-                //builder += "**" + i + "** - {";
                 foreach(string s in randomeList[i])
                 {
                     builder += s + ", ";
                 }
                 builder = builder.Remove(builder.Length - 2);
                 embed.AddField(i, builder, true);
-                //builder += "}\n";
+                builder = "";
             }
-
 
             Console.WriteLine(builder);
             await channel.SendMessageAsync("", false, embed);

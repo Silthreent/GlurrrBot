@@ -12,6 +12,9 @@ namespace GlurrrBotDiscord2
 {
     class Program
     {
+        public const ulong MATT_ID = 134852512611172352;
+        public const ulong DAVID_ID = 135498846494130177;
+
         static DiscordClient discord;
 
         static event AsyncEventHandler<MessageCreateEventArgs> MessageCreated;
@@ -50,6 +53,9 @@ namespace GlurrrBotDiscord2
             discord.MessageCreated += onMessageCreated;
             MessageCreated += CommandHandler.handleCommand;
 
+            //var david = discord.GetUserAsync(135498846494130177).Result;
+            discord.PresenceUpdated += onUserUpdated;
+
             await discord.ConnectAsync();
 
             await Task.Delay(-1);
@@ -82,6 +88,19 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine("グルーラーが目を覚ました");
                 CommandHandler.japanMode = true;
                 await MessageCreated(e);
+            }
+        }
+
+        private static async Task onUserUpdated(PresenceUpdateEventArgs args)
+        {
+            Console.WriteLine(args.Member.Username + " : Before - " + args.PresenceBefore.Status + " : After - " + args.Member.Presence.Status);
+            if(args.Member.Id == DAVID_ID)
+            {
+                if(args.PresenceBefore.Status != UserStatus.Online && args.Member.Presence.Status == UserStatus.Online)
+                {
+                    Console.WriteLine("David play Doki Doki");
+                    await args.Guild.Channels[0].SendMessageAsync(args.Member.Mention + " play Doki Doki");
+                }
             }
         }
     }
