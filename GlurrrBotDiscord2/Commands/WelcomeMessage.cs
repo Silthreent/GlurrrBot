@@ -30,6 +30,7 @@ namespace GlurrrBotDiscord2.Commands
         //Set the welcome message. Attach to the pinged user to the message in quotes
             if(args.Message.Content.ToLower().Contains("set"))
             {
+                Console.WriteLine("Setting welcome messsage");
                 if(args.MentionedUsers.Count == 0)
                 {
                     Console.WriteLine("No user to attach to");
@@ -51,6 +52,23 @@ namespace GlurrrBotDiscord2.Commands
                     Console.WriteLine("Set " + args.MentionedUsers[0].Username + "'s welcome message to " + quoteSplit[1]);
                     await args.Channel.SendMessageAsync("Set " + args.MentionedUsers[0].Username + "'s welcome message to " + quoteSplit[1]);
                 }
+            }
+
+        // Remove someone's welcome message
+            if(args.Message.Content.ToLower().Contains("remove"))
+            {
+                Console.WriteLine("Removing welcome message");
+                if(args.MentionedUsers.Count == 0)
+                {
+                    Console.WriteLine("No user to remove message");
+                    await args.Channel.SendMessageAsync("No user to put message with");
+                    return;
+                }
+
+                File.Delete(@"welcomemessages/" + args.MentionedUsers[0].Id + ".txt");
+
+                Console.WriteLine("Welcome message for " + args.MentionedUsers[0].Username + " removed");
+                await args.Channel.SendMessageAsync("Welcome message for " + args.MentionedUsers[0].Username + " removed");
             }
         }
     }
