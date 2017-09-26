@@ -20,18 +20,25 @@ namespace GlurrrBotDiscord2
 
             if(msg.Contains("randome") || msg.Contains("らんどめ"))
             {
+                Console.WriteLine("Running Randome (MessageCreated)");
                 await Randome.runCommand(args);
+            }
+
+            if(msg.Contains("welcome"))
+            {
+                Console.WriteLine("Running Welcome (MessageCreated)");
+                await WelcomeMessage.updateMessages(args);
             }
 
             if(msg.Contains("anime"))
             {
-                Console.WriteLine("Running anime");
+                Console.WriteLine("Running Anime (MessageCreated)");
                 await args.Message.RespondAsync("I love 2d");
             }
 
             if(msg.Contains("picture"))
             {
-                Console.WriteLine("Running pictures");
+                Console.WriteLine("Running Picture (MessageCreated)");
                 await AnimePicture.runCommand(args);
             }
         }
@@ -43,7 +50,7 @@ namespace GlurrrBotDiscord2
             if(args.PresenceBefore.Status != UserStatus.Online && args.Member.Presence.Status == UserStatus.Online)
             {
                 Console.WriteLine("User just came online, running command");
-                await WelcomeMessage.runCommand(args);
+                await WelcomeMessage.welcomeMessage(args);
             }
         }
     }
