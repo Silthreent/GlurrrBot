@@ -10,8 +10,17 @@ namespace GlurrrBotDiscord2.Commands
 {
     public class WelcomeMessage
     {
+        static Dictionary<ulong, DateTime> welcomeDelays = new Dictionary<ulong, DateTime>();
+
         public static async Task welcomeMessage(PresenceUpdateEventArgs args)
         {
+            if(welcomeDelays.ContainsKey(args.Member.Id) && welcomeDelays[args.Member.Id].CompareTo(DateTime.UtcNow) > 0)
+            {
+                Console.WriteLine("Not enough time since last welcome");
+                return;
+            }
+
+            Console.WriteLine("Enough time passed");
             if(File.Exists(@"welcomemessages/" + args.Member.Id + ".txt"))
             {
                 Console.WriteLine("Welcome message found");
@@ -19,7 +28,14 @@ namespace GlurrrBotDiscord2.Commands
                 {
                     Console.WriteLine(args.Member.Username + " has a welcome message");
                     await args.Guild.Channels[0].SendMessageAsync(file.ReadLineAsync().Result);
+                    welcomeDelays[args.Member.Id] = DateTime.UtcNow.AddHours(6);
+                    Console.WriteLine(DateTime.UtcNow.AddHours(6));
+
                 }
+            }
+            else
+            {
+                welcomeDelays.Remove(args.Member.Id);
             }
         }
 

@@ -47,7 +47,7 @@ namespace GlurrrBotDiscord2
         {
             Console.WriteLine(args.Member.Username + " : Before - " + args.PresenceBefore.Status + " : After - " + args.Member.Presence.Status);
 
-            if(args.PresenceBefore.Status != UserStatus.Online && args.Member.Presence.Status == UserStatus.Online)
+            if(args.PresenceBefore.Status == UserStatus.Offline && args.Member.Presence.Status == UserStatus.Online)
             {
                 Console.WriteLine("User just came online, running command");
                 await WelcomeMessage.welcomeMessage(args);
