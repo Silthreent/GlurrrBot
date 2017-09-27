@@ -111,6 +111,14 @@ namespace GlurrrBotDiscord2.Commands
                     }
                 }
 
+                if(msg.Contains("list"))
+                {
+                    File.Delete(@"randomelists/" + splitString[1] + ".txt");
+                    Console.WriteLine("Randome list " + splitString[1]);
+                    await args.Channel.SendMessageAsync("Deleted Randome list " + splitString[1]);
+                    return;
+                }
+
                 if(msg.Contains("from my") || msg.Contains("じぶんの"))
                 {
                     // Look for the specified object from their own list
