@@ -1,4 +1,5 @@
-﻿using DSharpPlus.EventArgs;
+﻿using DSharpPlus.Entities;
+using DSharpPlus.EventArgs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +15,9 @@ namespace GlurrrBotDiscord2.Commands
 
         public static async Task welcomeMessage(PresenceUpdateEventArgs args)
         {
+            if(args.PresenceBefore.Status != UserStatus.Offline && args.Member.Presence.Status == UserStatus.Online)
+                return;
+
             if(welcomeDelays.ContainsKey(args.Member.Id) && welcomeDelays[args.Member.Id].CompareTo(DateTime.UtcNow) > 0)
             {
                 Console.WriteLine("Not enough time since last welcome");
