@@ -57,8 +57,17 @@ namespace GlurrrBotDiscord2.Commands
             if(commandFound == false && msg.Contains("save"))
             {
                 commandFound = true;
+                string[] splitString = msg.Split('"');
+                if(splitString.Length < 3)
+                {
+                    Console.WriteLine("No name entered, saving to default");
+                    await args.Channel.SendMessageAsync("No name entered, saving to default");
+                    await saveList(args.Channel);
+                    return;
+                }
 
-                await saveList(args.Channel);
+                Console.WriteLine("Saving list to " + splitString[1]);
+                await saveList(args.Channel, splitString[1]);
             }
 
         // Loads the Randome list from file
@@ -66,7 +75,18 @@ namespace GlurrrBotDiscord2.Commands
             {
                 commandFound = true;
 
-                await loadList(args.Channel);
+                string[] splitString = msg.Split('"');
+                if(splitString.Length < 3)
+                {
+                    Console.WriteLine("No name entered, loading default");
+                    await args.Channel.SendMessageAsync("No name entered, loading default");
+                    await loadList(args.Channel);
+                    await displayRandome(args.Channel);
+                    return;
+                }
+
+                Console.WriteLine("Loading " + splitString[1]);
+                await loadList(args.Channel, splitString[1]);
                 await displayRandome(args.Channel);
             }
 
@@ -251,12 +271,12 @@ namespace GlurrrBotDiscord2.Commands
             await channel.SendMessageAsync("", false, embed);
         }
 
-        static async Task saveList(DiscordChannel channel)
+        static async Task saveList(DiscordChannel channel, string fileName = "randomelist")
         {
             Console.WriteLine("Saving Randome list");
             await channel.SendMessageAsync("Saving Randome lists...");
 
-            using(StreamWriter file = new StreamWriter(@"randomelists/randomelist.txt"))
+            using(StreamWriter file = new StreamWriter(@"randomelists/" + fileName + ".txt"))
             {
                 foreach(string i in randomeList.Keys)
                 {
@@ -272,7 +292,7 @@ namespace GlurrrBotDiscord2.Commands
             await channel.SendMessageAsync("Finished saving Randome lists");
         }
 
-        static async Task loadList(DiscordChannel channel)
+        static async Task loadList(DiscordChannel channel, string fileName = "randomelist")
         {
             Console.WriteLine("Loading Randome list");
             await channel.SendMessageAsync("Loading Randome lists...");
@@ -284,7 +304,7 @@ namespace GlurrrBotDiscord2.Commands
 
             try
             {
-                using(StreamReader file = new StreamReader(@"randomelists/randomelist.txt"))
+                using(StreamReader file = new StreamReader(@"randomelists/" + fileName + ".txt"))
                 {
                     while((line = await file.ReadLineAsync()) != null)
                     {
@@ -308,6 +328,7 @@ namespace GlurrrBotDiscord2.Commands
             {
                 Console.WriteLine("File did not exist");
                 Console.WriteLine(e.Message);
+                await channel.SendMessageAsync("Could not find Randome file to load");
             }
 
             Console.WriteLine("Finished loading Randome list");
