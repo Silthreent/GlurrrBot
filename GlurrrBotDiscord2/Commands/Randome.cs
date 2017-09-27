@@ -53,10 +53,12 @@ namespace GlurrrBotDiscord2.Commands
             }
 
         // Saves the Randome list to file to retrieve later
-        // TODO: Save randome list by file by name, can retrieve by name
             if(commandFound == false && msg.Contains("save"))
             {
                 commandFound = true;
+
+                //Check if they put a name in quotes
+                // If they did, save that. Otherwise default.
                 string[] splitString = msg.Split('"');
                 if(splitString.Length < 3)
                 {
@@ -75,6 +77,8 @@ namespace GlurrrBotDiscord2.Commands
             {
                 commandFound = true;
 
+                //Check if they put a name in quotes
+                // If they did, load that. Otherwise default.
                 string[] splitString = msg.Split('"');
                 if(splitString.Length < 3)
                 {
@@ -111,6 +115,7 @@ namespace GlurrrBotDiscord2.Commands
                     }
                 }
 
+                // Delete an entire Randome list file
                 if(msg.Contains("list"))
                 {
                     File.Delete(@"randomelists/" + splitString[1] + ".txt");
@@ -119,6 +124,7 @@ namespace GlurrrBotDiscord2.Commands
                     return;
                 }
 
+                // Delete a object from a list
                 if(msg.Contains("from my") || msg.Contains("じぶんの"))
                 {
                     // Look for the specified object from their own list
@@ -154,6 +160,7 @@ namespace GlurrrBotDiscord2.Commands
                             await args.Channel.SendMessageAsync("見つかりませんでした " + args.Author.Username + "〜の りすと");
                     }
                 }
+                // Delete the object from any list
                 else
                 {
                     // Look for the specified object in all lists
@@ -242,6 +249,7 @@ namespace GlurrrBotDiscord2.Commands
             }
         }
 
+        // Method used to display the currently loaded Randome list
         async static Task displayRandome(DiscordChannel channel)
         {
             if(randomeList.Keys.Count == 0)
@@ -279,6 +287,7 @@ namespace GlurrrBotDiscord2.Commands
             await channel.SendMessageAsync("", false, embed);
         }
 
+        // Save the current Randome list, either to default or to the entered name
         static async Task saveList(DiscordChannel channel, string fileName = "randomelist")
         {
             Console.WriteLine("Saving Randome list");
@@ -296,14 +305,15 @@ namespace GlurrrBotDiscord2.Commands
                 }
             }
 
-            Console.WriteLine("Finished saving Randome list");
-            await channel.SendMessageAsync("Finished saving Randome lists");
+            Console.WriteLine("Finished saving Randome list " + fileName);
+            await channel.SendMessageAsync("Finished saving Randome lists " + fileName);
         }
 
+        // Load a Randome list, either the default or the one entered
         static async Task loadList(DiscordChannel channel, string fileName = "randomelist")
         {
-            Console.WriteLine("Loading Randome list");
-            await channel.SendMessageAsync("Loading Randome lists...");
+            Console.WriteLine("Loading Randome list " + fileName);
+            await channel.SendMessageAsync("Loading Randome lists..." + fileName);
 
             string line;
             string currentUser = "";
