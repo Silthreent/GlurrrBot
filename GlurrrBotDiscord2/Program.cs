@@ -70,13 +70,12 @@ namespace GlurrrBotDiscord2
 
         private static async Task init(GuildCreateEventArgs e)
         {
-            //await e.Guild.GetDefaultChannel().SendMessageAsync("renpy.file(\"characters/glurrr.chr\")");
             Console.WriteLine("Loading call names");
-            Console.WriteLine(e.Guild.Roles[e.Guild.Roles.Count - 1]);
 
             string[] subLine;
             string line;
-            string welcome = "";
+            string welcome = " ";
+
             try
             {
                 using(StreamReader file = new StreamReader(@"characters/" + discord.CurrentUser.Username.ToLower() + ".chr"))
@@ -95,6 +94,10 @@ namespace GlurrrBotDiscord2
                             if(subLine[0] == "welcome")
                             {
                                 welcome = subLine[1];
+                            }
+                            if(subLine[0] == "game")
+                            {
+                                await Program.discord.UpdateStatusAsync(game: new Game(" " + subLine[1]));
                             }
                         }
                         else

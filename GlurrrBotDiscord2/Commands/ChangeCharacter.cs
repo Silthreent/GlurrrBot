@@ -85,7 +85,7 @@ namespace GlurrrBotDiscord2.Commands
                         break;
 
                     case "role":
-                        await guild.UpdateRoleAsync(guild.Roles[guild.Roles.Count - 1], name: subLine[1]);
+                        await guild.UpdateRoleAsync(guild.Roles[guild.Roles.Count - 2], name: subLine[1]);
                         break;
 
                     default:
