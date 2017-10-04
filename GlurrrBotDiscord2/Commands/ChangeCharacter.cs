@@ -34,7 +34,7 @@ namespace GlurrrBotDiscord2.Commands
                     while((line = await file.ReadLineAsync()) != null)
                     {
                         subLine = line.Split(':');
-                        if(subLine.Length > 2)
+                        if(subLine.Length == 2)
                             checkSubLine(subLine);
                         else
                             Console.WriteLine("Invalid line " + line);

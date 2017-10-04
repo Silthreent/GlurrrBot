@@ -70,11 +70,14 @@ namespace GlurrrBotDiscord2
         {
             await checkFixedCommands(e);
 
-            if(e.Message.Content.ToLower().Contains("glurrr") || e.Message.Content.ToLower().Contains("glibba"))
+            foreach(string name in callNames)
             {
-                Console.WriteLine("Glurrr awakened");
-                CommandHandler.japanMode = false;
-                await MessageCreated(e);
+                if(e.Message.Content.ToLower().Contains(name))
+                {
+                    Console.WriteLine("Glurrr awakened");
+                    CommandHandler.japanMode = false;
+                    await MessageCreated(e);
+                }
             }
 
             if(e.Message.Content.Contains("ぐるる"))
@@ -110,7 +113,7 @@ namespace GlurrrBotDiscord2
         public static void addCallName(string name)
         {
             if(!(callNames.Contains(name)))
-                callNames.Add(name);
+                callNames.Add(name.ToLower());
         }
 
         public static void clearCallNames()
