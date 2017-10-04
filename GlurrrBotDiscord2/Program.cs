@@ -70,7 +70,49 @@ namespace GlurrrBotDiscord2
 
         private static async Task init(GuildCreateEventArgs e)
         {
-            await e.Guild.GetDefaultChannel().SendMessageAsync("renpy.file(\"characters/glurrr.chr\")");
+            //await e.Guild.GetDefaultChannel().SendMessageAsync("renpy.file(\"characters/glurrr.chr\")");
+            Console.WriteLine("Loading call names");
+            Console.WriteLine(e.Guild.Roles[e.Guild.Roles.Count - 1]);
+
+            string[] subLine;
+            string line;
+            string welcome = "";
+            try
+            {
+                using(StreamReader file = new StreamReader(@"characters/" + discord.CurrentUser.Username.ToLower() + ".chr"))
+                {
+                    Program.clearCallNames();
+
+                    while((line = await file.ReadLineAsync()) != null)
+                    {
+                        subLine = line.Split(':');
+                        if(subLine.Length == 2)
+                        {
+                            if(subLine[0] == "name" || subLine[0] == "altname")
+                            {
+                                addCallName(subLine[1]);
+                            }
+                            if(subLine[0] == "welcome")
+                            {
+                                welcome = subLine[1];
+                            }
+                        }
+                        else
+                            Console.WriteLine("Invalid line " + line);
+                    }
+                }
+            }
+            catch(FileNotFoundException ex)
+            {
+                Console.WriteLine("Can't find character file");
+                Console.WriteLine(ex.Message);
+                addCallName("glurrr");
+                await e.Guild.GetDefaultChannel().SendMessageAsync("Can't load .chr file; added \"glurrr\" as a default call");
+                return;
+            }
+
+            Console.WriteLine("Loaded call names");
+            await e.Guild.GetDefaultChannel().SendMessageAsync(welcome);
         }
 
         private static async Task onMessageCreated(MessageCreateEventArgs e)

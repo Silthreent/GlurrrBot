@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace GlurrrBotDiscord2.Commands
                     {
                         subLine = line.Split(':');
                         if(subLine.Length == 2)
-                            checkSubLine(subLine);
+                            await checkSubLine(subLine, args.Guild);
                         else
                             Console.WriteLine("Invalid line " + line);
                     }
@@ -58,52 +59,47 @@ namespace GlurrrBotDiscord2.Commands
 
         }
 
-        static void checkSubLine(string[] subLine)
+        static async Task checkSubLine(string[] subLine, DiscordGuild guild)
         {
-            switch(subLine[0])
-            {
-                case "name":
-                    Program.discord.EditCurrentUserAsync(username: subLine[1]);
-                    Program.addCallName(subLine[1]);
-                    break;
-
-                case "picture":
-                    Console.WriteLine("Changing picture: " + subLine[1]);
-                    try
-                    {
-                        Program.discord.EditCurrentUserAsync(avatar: new FileStream("characters/pictures/" + subLine[1], FileMode.Open));
-                    }
-                    catch(FileNotFoundException e)
-                    {
-                        Console.WriteLine("Picture didn't exist");
-                        Console.WriteLine(e.Message);
-                    }
-                    break;
-
-                case "game":
-                    Program.discord.UpdateStatusAsync(game: new Game(" " + subLine[1]));
-                    break;
-
-                case "altname":
-                    Program.addCallName(subLine[1]);
-                    break;
-
-                default:
-                    Console.WriteLine("Invalid tag: " + subLine[1]);
-                    break;
-            }
-        }
-
-        static void changePicture(string file)
-        {
-            Console.WriteLine("Changing picture: " + file);
+            Console.WriteLine(subLine[0] + " : " + subLine[1]);
             try
             {
-                Program.discord.EditCurrentUserAsync(avatar: new FileStream("characters/pictures/" + file, FileMode.Open));
+                switch(subLine[0])
+                {
+                    case "name":
+                        await Program.discord.EditCurrentUserAsync(username: subLine[1]);
+                        Program.addCallName(subLine[1]);
+                        break;
+
+                    case "picture":
+                        Console.WriteLine("Changing picture: " + subLine[1]);
+                        await Program.discord.EditCurrentUserAsync(avatar: new FileStream("characters/pictures/" + subLine[1], FileMode.Open));
+                        break;
+
+                    case "game":
+                        await Program.discord.UpdateStatusAsync(game: new Game(" " + subLine[1]));
+                        break;
+
+                    case "altname":
+                        Program.addCallName(subLine[1]);
+                        break;
+
+                    case "role":
+                        await guild.UpdateRoleAsync(guild.Roles[guild.Roles.Count - 1], name: subLine[1]);
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid tag: " + subLine[1]);
+                        break;
+                }
             }
             catch(FileNotFoundException e)
             {
-                Console.WriteLine("Picture didn't exist");
+                Console.WriteLine("File didn't exist");
+                Console.WriteLine(e.Message);
+            }
+            catch(Exception e)
+            {
                 Console.WriteLine(e.Message);
             }
         }
