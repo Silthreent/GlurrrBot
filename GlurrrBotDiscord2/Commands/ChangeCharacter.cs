@@ -21,6 +21,7 @@ namespace GlurrrBotDiscord2.Commands
             string chrName = args.Message.Content.Substring(23);
             chrName = chrName.Remove(chrName.Length - 2);
             Console.WriteLine("Loading: " + chrName);
+            await args.Channel.SendMessageAsync("Loading " + chrName + "...");
 
             string line;
             string[] subLine;
@@ -46,7 +47,15 @@ namespace GlurrrBotDiscord2.Commands
                 Console.WriteLine("Character file did not exist");
                 Console.WriteLine(e.Message);
                 await args.Channel.SendMessageAsync(chrName + " does not exist.");
+                return;
             }
+
+            await args.Channel.SendMessageAsync(chrName + " loaded successfully.");
+        }
+
+        public static void changeCharacter()
+        {
+
         }
 
         static void checkSubLine(string[] subLine)

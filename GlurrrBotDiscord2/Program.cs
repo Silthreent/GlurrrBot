@@ -61,14 +61,22 @@ namespace GlurrrBotDiscord2
 
             discord.PresenceUpdated += CommandHandler.presenceUpdatedCommand;
 
+            discord.GuildAvailable += init;
+
             await discord.ConnectAsync();
 
             await Task.Delay(-1);
         }
 
+        private static async Task init(GuildCreateEventArgs e)
+        {
+            await e.Guild.GetDefaultChannel().SendMessageAsync("renpy.file(\"characters/glurrr.chr\")");
+        }
+
         private static async Task onMessageCreated(MessageCreateEventArgs e)
         {
-            await checkFixedCommands(e);
+            if(await checkFixedCommands(e))
+                return;
 
             foreach(string name in callNames)
             {
@@ -88,12 +96,12 @@ namespace GlurrrBotDiscord2
             }
         }
 
-        private static async Task checkFixedCommands(MessageCreateEventArgs e)
+        private static async Task<bool> checkFixedCommands(MessageCreateEventArgs e)
         {
             if(e.Message.Content.StartsWith("renpy.file(\"characters/") && e.Message.Content.EndsWith(")"))
             {
                 await ChangeCharacter.runCommand(e);
-                return;
+                return true;
             }
 
             if(e.Message.Content.ToLower() == "/leave")
@@ -106,8 +114,10 @@ namespace GlurrrBotDiscord2
                 };
 
                 await e.Channel.SendMessageAsync("", false, embed);
-                return;
+                return true;
             }
+
+            return false;
         }
 
         public static void addCallName(string name)
