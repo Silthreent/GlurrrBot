@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using GlurrrBotDiscord2.Commands;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,8 +15,13 @@ namespace GlurrrBotDiscord2
     {
         //public const ulong MATT_ID = 134852512611172352;
         //public const ulong DAVID_ID = 135498846494130177;
+        // os.remove("characters/yuri.chr")
+        // renpy.file("characters/monika.chr")
+        // monika.chr does not exist.
+        // yuri.chr deleted successfully.
 
-        static DiscordClient discord;
+        public static DiscordClient discord;
+        static List<string> callNames = new List<string>();
 
         static event AsyncEventHandler<MessageCreateEventArgs> MessageCreated;
 
@@ -62,18 +68,7 @@ namespace GlurrrBotDiscord2
 
         private static async Task onMessageCreated(MessageCreateEventArgs e)
         {
-            if(e.Message.Content.ToLower() == "/leave")
-            {
-                var embed = new DiscordEmbedBuilder()
-                {
-                    Title = e.Author.Username + " has left",
-                    Description = e.Author.Username + " has left the Discord and would like everyone to know they did. They are very triggered.",
-                    Color = DiscordColor.DarkRed,
-                };
-
-                await e.Channel.SendMessageAsync("", false, embed);
-                return;
-            }
+            await checkFixedCommands(e);
 
             if(e.Message.Content.ToLower().Contains("glurrr") || e.Message.Content.ToLower().Contains("glibba"))
             {
@@ -88,6 +83,39 @@ namespace GlurrrBotDiscord2
                 CommandHandler.japanMode = true;
                 await MessageCreated(e);
             }
+        }
+
+        private static async Task checkFixedCommands(MessageCreateEventArgs e)
+        {
+            if(e.Message.Content.StartsWith("renpy.file(\"characters/") && e.Message.Content.EndsWith(")"))
+            {
+                await ChangeCharacter.runCommand(e);
+                return;
+            }
+
+            if(e.Message.Content.ToLower() == "/leave")
+            {
+                var embed = new DiscordEmbedBuilder()
+                {
+                    Title = e.Author.Username + " has left",
+                    Description = e.Author.Username + " has left the Discord and would like everyone to know they did. They are very triggered.",
+                    Color = DiscordColor.DarkRed,
+                };
+
+                await e.Channel.SendMessageAsync("", false, embed);
+                return;
+            }
+        }
+
+        public static void addCallName(string name)
+        {
+            if(!(callNames.Contains(name)))
+                callNames.Add(name);
+        }
+
+        public static void clearCallNames()
+        {
+            callNames.Clear();
         }
     }
 }

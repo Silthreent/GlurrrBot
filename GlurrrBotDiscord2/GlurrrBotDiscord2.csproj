@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Commands\AnimePicture.cs" />
+    <Compile Include="Commands\ChangeCharacter.cs" />
     <Compile Include="Commands\Randome.cs" />
     <Compile Include="Commands\WelcomeMessage.cs" />
     <Compile Include="Program.cs" />
