@@ -131,6 +131,7 @@ namespace GlurrrBotDiscord2
                     Console.WriteLine("Glurrr awakened");
                     CommandHandler.japanMode = false;
                     await MessageCreated(e);
+                    return;
                 }
             }
 
@@ -139,6 +140,7 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine("グルーラーが目を覚ました");
                 CommandHandler.japanMode = true;
                 await MessageCreated(e);
+                return;
             }
         }
 
