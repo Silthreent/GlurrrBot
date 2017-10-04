@@ -1,5 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,10 @@ namespace GlurrrBotDiscord2.Commands
 
             string line;
             string[] subLine;
+            string name = "";
+            string picture = "";
+            string game = "";
+            string roleName = "";
 
             try
             {
@@ -37,7 +42,52 @@ namespace GlurrrBotDiscord2.Commands
                     {
                         subLine = line.Split(':');
                         if(subLine.Length == 2)
-                            await checkSubLine(subLine, args.Guild);
+                        {
+                            try
+                            {
+                                Console.WriteLine(line);
+                                switch(subLine[0])
+                                {
+                                    case "name":
+                                        Program.addCallName(subLine[1]);
+                                        name = subLine[1];
+                                        break;
+
+                                    case "picture":
+                                        picture = subLine[1];
+                                        break;
+
+                                    case "game":
+                                        game = subLine[1];
+                                        break;
+
+                                    case "altname":
+                                        Program.addCallName(subLine[1]);
+                                        break;
+
+                                    case "role":
+                                        roleName = subLine[1];
+                                        break;
+
+                                    default:
+                                        Console.WriteLine("Invalid tag: " + subLine[0]);
+                                        break;
+                                }
+                            }
+                            catch(FileNotFoundException e)
+                            {
+                                Console.WriteLine("File not found");
+                                Console.WriteLine(e.Message);
+                            }
+                            catch(RateLimitException e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                            catch(Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                        }
                         else
                             Console.WriteLine("Invalid line " + line);
                     }
@@ -45,63 +95,19 @@ namespace GlurrrBotDiscord2.Commands
             }
             catch(FileNotFoundException e)
             {
-                Console.WriteLine("Character file did not exist");
+                Console.WriteLine("File did not exist");
                 Console.WriteLine(e.Message);
                 await args.Channel.SendMessageAsync(chrName + " does not exist.");
                 return;
-            }
-
-            await args.Channel.SendMessageAsync(chrName + " loaded successfully.");
-        }
-
-        public static void changeCharacter()
-        {
-
-        }
-
-        static async Task checkSubLine(string[] subLine, DiscordGuild guild)
-        {
-            Console.WriteLine(subLine[0] + " : " + subLine[1]);
-            try
-            {
-                switch(subLine[0])
-                {
-                    case "name":
-                        await Program.discord.EditCurrentUserAsync(username: subLine[1]);
-                        Program.addCallName(subLine[1]);
-                        break;
-
-                    case "picture":
-                        Console.WriteLine("Changing picture: " + subLine[1]);
-                        await Program.discord.EditCurrentUserAsync(avatar: new FileStream("characters/pictures/" + subLine[1], FileMode.Open));
-                        break;
-
-                    case "game":
-                        await Program.discord.UpdateStatusAsync(game: new Game(" " + subLine[1]));
-                        break;
-
-                    case "altname":
-                        Program.addCallName(subLine[1]);
-                        break;
-
-                    case "role":
-                        await guild.UpdateRoleAsync(guild.Roles[guild.Roles.Count - 2], name: subLine[1]);
-                        break;
-
-                    default:
-                        Console.WriteLine("Invalid tag: " + subLine[1]);
-                        break;
-                }
-            }
-            catch(FileNotFoundException e)
-            {
-                Console.WriteLine("File didn't exist");
-                Console.WriteLine(e.Message);
             }
             catch(Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+
+            await Program.update(name, picture, game, args.Guild, roleName);
+
+            await args.Channel.SendMessageAsync(chrName + " loaded successfully.");
         }
     }
 }

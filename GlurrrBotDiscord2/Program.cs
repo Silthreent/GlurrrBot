@@ -1,6 +1,7 @@
 ﻿using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
+using DSharpPlus.Exceptions;
 using GlurrrBotDiscord2.Commands;
 using System;
 using System.Collections.Generic;
@@ -174,6 +175,25 @@ namespace GlurrrBotDiscord2
         public static void clearCallNames()
         {
             callNames.Clear();
+        }
+
+        public static async Task update(string name, string avatar, string game, DiscordGuild guild, string roleName)
+        {
+            try
+            {
+                await discord.EditCurrentUserAsync(username: name, avatar: new FileStream("characters/pictures/" + avatar, FileMode.Open));
+
+                await discord.UpdateStatusAsync(game: new Game(" " + game));
+
+                if(roleName != null)
+                {
+                    await guild.UpdateRoleAsync(guild.Roles[guild.Roles.Count - 2], name: roleName);
+                }
+            }
+            catch(BadRequestException e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
     }
 }
