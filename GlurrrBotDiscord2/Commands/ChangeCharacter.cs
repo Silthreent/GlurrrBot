@@ -16,9 +16,19 @@ namespace GlurrrBotDiscord2.Commands
         // Find a .chr file entered, load it
         // .chr file will contain what to change the bot's name too, what it's called internally
         // it's nickname, profile pic, and anything else I could need
+
+        static DateTime cooldown;
+
         public static async Task runCommand(MessageCreateEventArgs args)
         {
             Console.WriteLine("Running Change Character command");
+
+            if(cooldown.CompareTo(DateTime.UtcNow) > 0)
+            {
+                Console.WriteLine("Ratelimit locked");
+                await args.Channel.SendMessageAsync("You trying to get rid of me already?");
+                return;
+            }
 
             string chrName = args.Message.Content.Substring(23);
             chrName = chrName.Remove(chrName.Length - 2);
@@ -106,6 +116,9 @@ namespace GlurrrBotDiscord2.Commands
             }
 
             await Program.update(name, picture, game, args.Guild, roleName);
+
+            cooldown = DateTime.UtcNow.AddMinutes(20);
+            Console.WriteLine(cooldown);
 
             await args.Channel.SendMessageAsync(chrName + " loaded successfully.");
         }
