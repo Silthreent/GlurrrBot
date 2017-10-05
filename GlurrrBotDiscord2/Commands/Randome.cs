@@ -27,13 +27,8 @@ namespace GlurrrBotDiscord2.Commands
                 string[] splitString = args.Message.Content.Split('"');
                 if(splitString.Length < 3)
                 {
-                    splitString = args.Message.Content.Split('”');
-                    if(splitString.Length < 3)
-                    {
-                        await args.Message.Channel.SendMessageAsync("Enter something to add to the pool in quotes!");
-
-                        return;
-                    }
+                    await args.Message.Channel.SendMessageAsync(Character.getText("noquotes"));
+                    return;
                 }
 
                 // Add it to their list, if they don't have a list yet create them one first
@@ -60,7 +55,7 @@ namespace GlurrrBotDiscord2.Commands
                 if(splitString.Length < 3)
                 {
                     Console.WriteLine("No name entered, saving to default");
-                    await args.Channel.SendMessageAsync("No name entered, saving to default");
+                    await args.Channel.SendMessageAsync(Character.getText("saveefault"));
                     await saveList(args.Channel);
                     return;
                 }
@@ -80,7 +75,7 @@ namespace GlurrrBotDiscord2.Commands
                 if(splitString.Length < 3)
                 {
                     Console.WriteLine("No name entered, loading default");
-                    await args.Channel.SendMessageAsync("No name entered, loading default");
+                    await args.Channel.SendMessageAsync(Character.getText("loaddefault"));
                     await loadList(args.Channel);
                     await displayRandome(args.Channel);
                     return;
@@ -100,13 +95,8 @@ namespace GlurrrBotDiscord2.Commands
                 string[] splitString = args.Message.Content.Split('"');
                 if(splitString.Length < 3)
                 {
-                    splitString = args.Message.Content.Split('”');
-                    if(splitString.Length < 3)
-                    {
-                        await args.Message.Channel.SendMessageAsync("Enter something to add to the pool in quotes!");
-
-                        return;
-                    }
+                    await args.Message.Channel.SendMessageAsync("noquotes");
+                    return;
                 }
 
                 // Delete an entire Randome list file
@@ -114,7 +104,7 @@ namespace GlurrrBotDiscord2.Commands
                 {
                     File.Delete(@"randomelists/" + splitString[1] + ".txt");
                     Console.WriteLine("Randome list " + splitString[1]);
-                    await args.Channel.SendMessageAsync("Deleted Randome list " + splitString[1]);
+                    await args.Channel.SendMessageAsync(Character.getText("deletelist", splitString[1]));
                     return;
                 }
 
@@ -128,21 +118,20 @@ namespace GlurrrBotDiscord2.Commands
                         {
                             randomeList[args.Author.Username].Remove(splitString[1]);
                             Console.WriteLine("Deleted " + splitString[1] + " from " + args.Author.Username);
-                            await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + args.Author.Username + "'s list");
-
+                            await args.Channel.SendMessageAsync(Character.getText("deletefrom", splitString[1], args.Author.Username));
                             return;
                         }
                         else
                         {
                             Console.WriteLine("Couldn't find " + splitString[1] + " on " + args.Author.Username + "'s list");
-                            await args.Channel.SendMessageAsync("Couldn't find " + splitString[1] + " on " + args.Author.Username + "'s list");
+                            await args.Channel.SendMessageAsync(Character.getText("couldntfind", splitString[1]));
                         }
                     }
                     else
                     {
                         Console.WriteLine("Couldn't find " + args.Author.Username + "'s list");
 
-                        await args.Channel.SendMessageAsync("Couldn't find " + args.Author.Username + "'s list");
+                        await args.Channel.SendMessageAsync(Character.getText("couldntfind", args.Author.Username + "'s Randome"));
                     }
                 }
                 // Delete the object from any list
@@ -155,18 +144,19 @@ namespace GlurrrBotDiscord2.Commands
                         {
                             randomeList[i].Remove(splitString[1]);
                             Console.WriteLine("Deleted " + splitString[1] + " from " + i);
-                            await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + i + "'s list");
+                            await args.Channel.SendMessageAsync(Character.getText("deletefrom", splitString[1], i));
 
                             return;
                         }
                     }
 
                     Console.WriteLine("Couldn't find " + splitString[1] + " anywhere");
-                    await args.Channel.SendMessageAsync("Couldn't find " + splitString[1] + " anywhere");
+                    await args.Channel.SendMessageAsync(Character.getText("couldntfind", splitString[1]));
                 }
             }
 
         // Roll for randome
+        // TODO: Dont roll if the list is empty
             if(commandFound == false && msg.Contains("roll"))
             {
                 commandFound = true;
@@ -181,25 +171,31 @@ namespace GlurrrBotDiscord2.Commands
                     }
                 }
 
-                await args.Message.Channel.SendMessageAsync("Let's see...");
+                if(rollOptions.Count == 0)
+                {
+                    Console.WriteLine("Randome list is empty; can't roll");
+                    await args.Channel.SendMessageAsync(Character.getText("rollfail"));
+                }
+
+                await args.Message.Channel.SendMessageAsync(Character.getText("roll1"));
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
-                await args.Message.Channel.SendMessageAsync("...");
+                await args.Message.Channel.SendMessageAsync(Character.getText("roll2"));
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
-                await args.Message.Channel.SendMessageAsync("And the winner is...");
+                await args.Message.Channel.SendMessageAsync(Character.getText("roll3"));
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
-                await args.Message.Channel.SendMessageAsync("...");
+                await args.Message.Channel.SendMessageAsync(Character.getText("roll4"));
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
 
                 Random random = new Random();
-                await args.Message.Channel.SendMessageAsync(rollOptions[random.Next(0, rollOptions.Count - 1)] + "!");
+                await args.Message.Channel.SendMessageAsync(Character.getText("rollwinner", rollOptions[random.Next(0, rollOptions.Count - 1)]));
             }
             
         // Display the randome list
@@ -215,7 +211,7 @@ namespace GlurrrBotDiscord2.Commands
                 commandFound = true;
                 randomeList.Clear();
 
-                await args.Message.Channel.SendMessageAsync("Randome lists cleared");
+                await args.Message.Channel.SendMessageAsync(Character.getText("randomeclear"));
             }
         }
 
@@ -225,7 +221,7 @@ namespace GlurrrBotDiscord2.Commands
             if(randomeList.Keys.Count == 0)
             {
                 Console.WriteLine("Empty Randome list");
-                await channel.SendMessageAsync("Randome list is empty, nothing to display");
+                await channel.SendMessageAsync(Character.getText("randomedisplayfail"));
 
                 return;
             }
@@ -258,7 +254,7 @@ namespace GlurrrBotDiscord2.Commands
         static async Task saveList(DiscordChannel channel, string fileName = "randomelist")
         {
             Console.WriteLine("Saving Randome list");
-            await channel.SendMessageAsync("Saving Randome lists...");
+            await channel.SendMessageAsync(Character.getText("savinglist"));
 
             using(StreamWriter file = new StreamWriter(@"randomelists/" + fileName + ".txt"))
             {
@@ -273,14 +269,14 @@ namespace GlurrrBotDiscord2.Commands
             }
 
             Console.WriteLine("Finished saving Randome list " + fileName);
-            await channel.SendMessageAsync("Finished saving Randome lists " + fileName);
+            await channel.SendMessageAsync(Character.getText("finishsave", fileName));
         }
 
         // Load a Randome list, either the default or the one entered
         static async Task loadList(DiscordChannel channel, string fileName = "randomelist")
         {
             Console.WriteLine("Loading Randome list " + fileName);
-            await channel.SendMessageAsync("Loading Randome lists..." + fileName);
+            await channel.SendMessageAsync(Character.getText("loadinglist", fileName));
 
             string line;
             string currentUser = "";
@@ -313,11 +309,11 @@ namespace GlurrrBotDiscord2.Commands
             {
                 Console.WriteLine("File did not exist");
                 Console.WriteLine(e.Message);
-                await channel.SendMessageAsync("Could not find Randome file to load");
+                await channel.SendMessageAsync(Character.getText("couldntfind", fileName));
             }
 
             Console.WriteLine("Finished loading Randome list");
-            await channel.SendMessageAsync("Finished loading Randome lists");
+            await channel.SendMessageAsync(Character.getText("finishedload"));
         }
     }
 }

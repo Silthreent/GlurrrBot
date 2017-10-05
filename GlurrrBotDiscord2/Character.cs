@@ -15,15 +15,15 @@ namespace GlurrrBotDiscord2
         static Dictionary<string, string> text = new Dictionary<string, string>();
         //static Dictionary<string, string> consoleText;
 
-        public static string getText(string key)
+        public static string getText(string key, string format1 = null, string format2 = null)
         {
             if(text.ContainsKey(key))
             {
-                return text[key];
+                return string.Format(text[key], format1);
             }
             else
             {
-                return defaultText[key];
+                return string.Format(defaultText[key], format1, format2);
             }
         }
 
