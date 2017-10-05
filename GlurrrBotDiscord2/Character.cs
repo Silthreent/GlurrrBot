@@ -11,11 +11,18 @@ namespace GlurrrBotDiscord2
     {
         static Dictionary<string, string> defaultText = new Dictionary<string, string>();
         static Dictionary<string, string> text = new Dictionary<string, string>();
-        static Dictionary<string, string> consoleText;
+        //static Dictionary<string, string> consoleText;
 
         public static string getText(string key)
         {
-            return text[key];
+            if(text.ContainsKey(key))
+            {
+                return text[key];
+            }
+            else
+            {
+                return defaultText[key];
+            }
         }
 
         public static async Task loadDefault()
