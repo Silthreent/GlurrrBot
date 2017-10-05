@@ -46,7 +46,7 @@ namespace GlurrrBotDiscord2.Commands
             {
                 using(StreamReader file = new StreamReader(@"characters/" + chrName))
                 {
-                    Program.clearCallNames();
+                    Character.clearCallNames();
 
                     while((line = await file.ReadLineAsync()) != null)
                     {
@@ -59,7 +59,7 @@ namespace GlurrrBotDiscord2.Commands
                                 switch(subLine[0])
                                 {
                                     case "name":
-                                        Program.addCallName(subLine[1]);
+                                        Character.addCallName(subLine[1]);
                                         name = subLine[1];
                                         break;
 
@@ -72,7 +72,7 @@ namespace GlurrrBotDiscord2.Commands
                                         break;
 
                                     case "altname":
-                                        Program.addCallName(subLine[1]);
+                                        Character.addCallName(subLine[1]);
                                         break;
 
                                     case "role":

@@ -9,6 +9,8 @@ namespace GlurrrBotDiscord2
 {
     public class Character
     {
+        public static List<string> callNames = new List<string>();
+
         static Dictionary<string, string> defaultText = new Dictionary<string, string>();
         static Dictionary<string, string> text = new Dictionary<string, string>();
         //static Dictionary<string, string> consoleText;
@@ -55,6 +57,18 @@ namespace GlurrrBotDiscord2
                 subline = line.Split(':');
                 text[subline[0]] = subline[1];
             }
+        }
+
+        public static void addCallName(string name)
+        {
+            if(!(callNames.Contains(name)))
+                callNames.Add(name.ToLower());
+        }
+
+
+        public static void clearCallNames()
+        {
+            callNames.Clear();
         }
     }
 }

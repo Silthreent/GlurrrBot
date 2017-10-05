@@ -24,7 +24,6 @@ namespace GlurrrBotDiscord2
         // yuri.chr deleted successfully.
 
         public static DiscordClient discord;
-        static List<string> callNames = new List<string>();
 
         static event AsyncEventHandler<MessageCreateEventArgs> MessageCreated;
 
@@ -85,8 +84,6 @@ namespace GlurrrBotDiscord2
             {
                 using(StreamReader file = new StreamReader(@"characters/" + discord.CurrentUser.Username.ToLower() + ".chr"))
                 {
-                    Program.clearCallNames();
-
                     while((line = await file.ReadLineAsync()) != null)
                     {
                         subLine = line.Split(':');
@@ -94,7 +91,7 @@ namespace GlurrrBotDiscord2
                         {
                             if(subLine[0] == "name" || subLine[0] == "altname")
                             {
-                                addCallName(subLine[1]);
+                                Character.addCallName(subLine[1]);
                             }
                             if(subLine[0] == "welcome")
                             {
@@ -118,7 +115,7 @@ namespace GlurrrBotDiscord2
             {
                 Console.WriteLine("Can't find character file");
                 Console.WriteLine(ex.Message);
-                addCallName("glurrr");
+                Character.addCallName("glurrr");
                 await e.Guild.GetDefaultChannel().SendMessageAsync("Can't load .chr file; added \"glurrr\" as a default call");
                 return;
             }
@@ -132,12 +129,11 @@ namespace GlurrrBotDiscord2
             if(await checkFixedCommands(e))
                 return;
 
-            foreach(string name in callNames)
+            foreach(string name in Character.callNames)
             {
                 if(e.Message.Content.ToLower().Contains(name))
                 {
                     Console.WriteLine("Glurrr awakened");
-                    CommandHandler.japanMode = false;
                     await MessageCreated(e);
                     return;
                 }
@@ -146,7 +142,6 @@ namespace GlurrrBotDiscord2
             if(e.Message.Content.Contains("ぐるる"))
             {
                 Console.WriteLine("グルーラーが目を覚ました");
-                CommandHandler.japanMode = true;
                 await MessageCreated(e);
                 return;
             }
@@ -174,17 +169,6 @@ namespace GlurrrBotDiscord2
             }
 
             return false;
-        }
-
-        public static void addCallName(string name)
-        {
-            if(!(callNames.Contains(name)))
-                callNames.Add(name.ToLower());
-        }
-
-        public static void clearCallNames()
-        {
-            callNames.Clear();
         }
 
         public static async Task update(string name, string avatar, string game, DiscordGuild guild, string roleName)

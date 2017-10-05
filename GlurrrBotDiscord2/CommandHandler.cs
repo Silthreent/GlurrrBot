@@ -12,13 +12,11 @@ namespace GlurrrBotDiscord2
 {
     public class CommandHandler
     {
-        public static bool japanMode = false;
-
         public static async Task messageCreatedCommand(MessageCreateEventArgs args)
         {
             string msg = args.Message.Content.ToLower();
 
-            if(msg.Contains("randome") || msg.Contains("らんどめ"))
+            if(msg.Contains("randome"))
             {
                 Console.WriteLine("Running Randome (MessageCreated)");
                 await Randome.runCommand(args);

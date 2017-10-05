@@ -19,7 +19,7 @@ namespace GlurrrBotDiscord2.Commands
             string msg = args.Message.Content.ToLower();
 
         // Add to Randome list
-            if(commandFound == false && (msg.Contains("add") || msg.Contains("追加")))
+            if(commandFound == false && msg.Contains("add"))
             {
                 commandFound = true;
 
@@ -30,10 +30,7 @@ namespace GlurrrBotDiscord2.Commands
                     splitString = args.Message.Content.Split('”');
                     if(splitString.Length < 3)
                     {
-                        if(!CommandHandler.japanMode)
-                            await args.Message.Channel.SendMessageAsync("Enter something to add to the pool in quotes!");
-                        else
-                            await args.Message.Channel.SendMessageAsync("引用符で囲んでプールに追加するものを入力してください！");
+                        await args.Message.Channel.SendMessageAsync("Enter something to add to the pool in quotes!");
 
                         return;
                     }
@@ -95,7 +92,7 @@ namespace GlurrrBotDiscord2.Commands
             }
 
         // Removes a specified listing from either your own or the first one found
-            if(commandFound == false && (msg.Contains("delete") || msg.Contains("削除")))
+            if(commandFound == false && msg.Contains("delete"))
             {
                 commandFound = true;
 
@@ -106,10 +103,7 @@ namespace GlurrrBotDiscord2.Commands
                     splitString = args.Message.Content.Split('”');
                     if(splitString.Length < 3)
                     {
-                        if(!CommandHandler.japanMode)
-                            await args.Message.Channel.SendMessageAsync("Enter something to add to the pool in quotes!");
-                        else
-                            await args.Message.Channel.SendMessageAsync("引用符で囲んでプールに追加するものを入力してください！");
+                        await args.Message.Channel.SendMessageAsync("Enter something to add to the pool in quotes!");
 
                         return;
                     }
@@ -125,7 +119,7 @@ namespace GlurrrBotDiscord2.Commands
                 }
 
                 // Delete a object from a list
-                if(msg.Contains("from my") || msg.Contains("じぶんの"))
+                if(msg.Contains("from my"))
                 {
                     // Look for the specified object from their own list
                     if(randomeList.ContainsKey(args.Author.Username))
@@ -134,30 +128,21 @@ namespace GlurrrBotDiscord2.Commands
                         {
                             randomeList[args.Author.Username].Remove(splitString[1]);
                             Console.WriteLine("Deleted " + splitString[1] + " from " + args.Author.Username);
-                            if(!CommandHandler.japanMode)
-                                await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + args.Author.Username + "'s list");
-                            else
-                                await args.Channel.SendMessageAsync("削除済み " + splitString[1] + " から " + args.Author.Username + "〜の りすと");
+                            await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + args.Author.Username + "'s list");
 
                             return;
                         }
                         else
                         {
                             Console.WriteLine("Couldn't find " + splitString[1] + " on " + args.Author.Username + "'s list");
-                            if(!CommandHandler.japanMode)
-                                await args.Channel.SendMessageAsync("Couldn't find " + splitString[1] + " on " + args.Author.Username + "'s list");
-                            else
-                                await args.Channel.SendMessageAsync("見つかりませんでした " + splitString[1] + " に " + args.Author.Username + "〜の りすと");
+                            await args.Channel.SendMessageAsync("Couldn't find " + splitString[1] + " on " + args.Author.Username + "'s list");
                         }
                     }
                     else
                     {
                         Console.WriteLine("Couldn't find " + args.Author.Username + "'s list");
 
-                        if(!CommandHandler.japanMode)
-                            await args.Channel.SendMessageAsync("Couldn't find " + args.Author.Username + "'s list");
-                        else
-                            await args.Channel.SendMessageAsync("見つかりませんでした " + args.Author.Username + "〜の りすと");
+                        await args.Channel.SendMessageAsync("Couldn't find " + args.Author.Username + "'s list");
                     }
                 }
                 // Delete the object from any list
@@ -170,25 +155,19 @@ namespace GlurrrBotDiscord2.Commands
                         {
                             randomeList[i].Remove(splitString[1]);
                             Console.WriteLine("Deleted " + splitString[1] + " from " + i);
-                            if(!CommandHandler.japanMode)
-                                await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + i + "'s list");
-                            else
-                                await args.Channel.SendMessageAsync("削除済み " + splitString[1] + " から " + i + "〜の りすと");
+                            await args.Channel.SendMessageAsync("Deleted " + splitString[1] + " from " + i + "'s list");
 
                             return;
                         }
                     }
 
                     Console.WriteLine("Couldn't find " + splitString[1] + " anywhere");
-                    if(!CommandHandler.japanMode)
-                        await args.Channel.SendMessageAsync("Couldn't find " + splitString[1] + " anywhere");
-                    else
-                        await args.Channel.SendMessageAsync("見つかりませんでした " + splitString[1] + " どこでも");
+                    await args.Channel.SendMessageAsync("Couldn't find " + splitString[1] + " anywhere");
                 }
             }
 
         // Roll for randome
-            if(commandFound == false && (msg.Contains("roll") || msg.Contains("ろる")))
+            if(commandFound == false && msg.Contains("roll"))
             {
                 commandFound = true;
 
@@ -202,10 +181,7 @@ namespace GlurrrBotDiscord2.Commands
                     }
                 }
 
-                if(!CommandHandler.japanMode)
-                    await args.Message.Channel.SendMessageAsync("Let's see...");
-                else
-                    await args.Message.Channel.SendMessageAsync("どれどれ...");
+                await args.Message.Channel.SendMessageAsync("Let's see...");
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
@@ -213,10 +189,7 @@ namespace GlurrrBotDiscord2.Commands
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
-                if(!CommandHandler.japanMode)
-                    await args.Message.Channel.SendMessageAsync("And the winner is...");
-                else
-                    await args.Message.Channel.SendMessageAsync("そして勝者は...");
+                await args.Message.Channel.SendMessageAsync("And the winner is...");
                 await Task.Delay(1000);
                 await args.Message.Channel.SendMessageAsync("...");
                 await Task.Delay(1000);
@@ -230,22 +203,19 @@ namespace GlurrrBotDiscord2.Commands
             }
             
         // Display the randome list
-            if(commandFound == false && (msg.Contains("list") || msg.Contains("りすと")))
+            if(commandFound == false && msg.Contains("list"))
             {
                 commandFound = true;
                 await displayRandome(args.Message.Channel);
             }
 
         // Clear randome list
-            if(commandFound == false && (msg.Contains("clear") || msg.Contains("くりあ")))
+            if(commandFound == false && msg.Contains("clear"))
             {
                 commandFound = true;
                 randomeList.Clear();
 
-                if(!CommandHandler.japanMode)
-                    await args.Message.Channel.SendMessageAsync("Randome lists cleared");
-                else
-                    await args.Message.Channel.SendMessageAsync("ランドームリストがクリアされました");
+                await args.Message.Channel.SendMessageAsync("Randome lists cleared");
             }
         }
 
@@ -255,10 +225,7 @@ namespace GlurrrBotDiscord2.Commands
             if(randomeList.Keys.Count == 0)
             {
                 Console.WriteLine("Empty Randome list");
-                if(!CommandHandler.japanMode)
-                    await channel.SendMessageAsync("Randome list is empty, nothing to display");
-                else
-                    await channel.SendMessageAsync("ランドームリストは空で、表示するものはありません");
+                await channel.SendMessageAsync("Randome list is empty, nothing to display");
 
                 return;
             }
