@@ -175,6 +175,7 @@ namespace GlurrrBotDiscord2.Commands
                 {
                     Console.WriteLine("Randome list is empty; can't roll");
                     await args.Channel.SendMessageAsync(Character.getText("rollfail"));
+                    return;
                 }
 
                 await args.Message.Channel.SendMessageAsync(Character.getText("roll1"));

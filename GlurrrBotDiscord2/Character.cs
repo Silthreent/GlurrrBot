@@ -23,7 +23,10 @@ namespace GlurrrBotDiscord2
             }
             else
             {
-                return string.Format(defaultText[key], format1, format2);
+                if(defaultText.ContainsKey(key))
+                    return string.Format(defaultText[key], format1, format2);
+                else
+                    return getText("error");
             }
         }
 
