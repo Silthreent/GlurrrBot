@@ -65,8 +65,6 @@ namespace GlurrrBotDiscord2
 
             discord.GuildAvailable += init;
 
-            await Character.loadDefault();
-
             await discord.ConnectAsync();
 
             await Task.Delay(-1);
@@ -74,6 +72,7 @@ namespace GlurrrBotDiscord2
 
         private static async Task init(GuildCreateEventArgs e)
         {
+            await Character.loadDefault();
             Console.WriteLine("Loading call names");
 
             string[] subLine;

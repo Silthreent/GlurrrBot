@@ -15,7 +15,7 @@ namespace GlurrrBotDiscord2
         static Dictionary<string, string> text = new Dictionary<string, string>();
         //static Dictionary<string, string> consoleText;
 
-        public static string getText(string key, string format1 = null, string format2 = null)
+        public static string getText(string key, string format1 = "X", string format2 = "X")
         {
             if(text.ContainsKey(key))
             {
@@ -26,7 +26,7 @@ namespace GlurrrBotDiscord2
                 if(defaultText.ContainsKey(key))
                     return string.Format(defaultText[key], format1, format2);
                 else
-                    return getText("error");
+                    return defaultText["error"];
             }
         }
 
@@ -37,12 +37,14 @@ namespace GlurrrBotDiscord2
 
             using(StreamReader file = new StreamReader(@"characters/default.chr"))
             {
+                Console.WriteLine("Loading default phrases");
                 while((line = await file.ReadLineAsync()) != null)
                 {
                     subline = line.Split(':');
                     if(subline.Length == 2)
                     {
-                        text.Add(subline[0], subline[1]);
+                        Console.WriteLine("Loading default phrase: " + line);
+                        defaultText.Add(subline[0], subline[1]);
                     }
                 }
             }
