@@ -14,6 +14,8 @@ namespace GlurrrBotDiscord2
 {
     class Program
     {
+        // TODO: Change some data to be in a different file, such as client.
+        // TODO: Have any messages read from a global source, based on character set
         //public const ulong MATT_ID = 134852512611172352;
         //public const ulong DAVID_ID = 135498846494130177;
         // os.remove("characters/yuri.chr")
@@ -64,6 +66,8 @@ namespace GlurrrBotDiscord2
 
             discord.GuildAvailable += init;
 
+            await Character.loadDefault();
+
             await discord.ConnectAsync();
 
             await Task.Delay(-1);
@@ -100,6 +104,10 @@ namespace GlurrrBotDiscord2
                             {
                                 await Program.discord.UpdateStatusAsync(game: new Game(" " + subLine[1]));
                             }
+                        }
+                        else if(line == "#Text")
+                        {
+                            await Character.updateText(file);
                         }
                         else
                             Console.WriteLine("Invalid line " + line);

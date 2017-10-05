@@ -98,9 +98,15 @@ namespace GlurrrBotDiscord2.Commands
                                 Console.WriteLine(e.Message);
                             }
                         }
+                        else if(line == "#Text")
+                        {
+                            break;
+                        }
                         else
                             Console.WriteLine("Invalid line " + line);
                     }
+
+                    await Character.updateText(file);
                 }
             }
             catch(FileNotFoundException e)

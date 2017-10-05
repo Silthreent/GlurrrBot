@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Character.cs" />
     <Compile Include="CommandHandler.cs" />
     <Compile Include="Commands\AnimePicture.cs" />
     <Compile Include="Commands\ChangeCharacter.cs" />

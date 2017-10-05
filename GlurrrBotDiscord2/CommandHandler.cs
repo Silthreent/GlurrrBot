@@ -33,7 +33,7 @@ namespace GlurrrBotDiscord2
             if(msg.Contains("anime"))
             {
                 Console.WriteLine("Running Anime (MessageCreated)");
-                await args.Message.RespondAsync("I love 2d");
+                await args.Message.RespondAsync(Character.getText("anime"));
             }
 
             if(msg.Contains("picture"))
