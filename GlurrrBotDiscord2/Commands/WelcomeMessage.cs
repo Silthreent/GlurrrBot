@@ -31,7 +31,7 @@ namespace GlurrrBotDiscord2.Commands
                 using(StreamReader file = new StreamReader(@"welcomemessages/" + args.Member.Id + ".txt"))
                 {
                     Console.WriteLine(args.Member.Username + " has a welcome message");
-                    await args.Guild.Channels[0].SendMessageAsync(file.ReadLineAsync().Result);
+                    await args.Guild.Channels[0].SendMessageAsync(Character.getText("welcome", file.ReadLineAsync().Result, args.Member.Username));
                     welcomeDelays[args.Member.Id] = DateTime.UtcNow.AddHours(6);
                     Console.WriteLine(DateTime.UtcNow.AddHours(6));
 
@@ -54,7 +54,7 @@ namespace GlurrrBotDiscord2.Commands
                 if(args.MentionedUsers.Count == 0)
                 {
                     Console.WriteLine("No user to attach to");
-                    await args.Channel.SendMessageAsync("No user to put message with");
+                    await args.Channel.SendMessageAsync(Character.getText("nouser"));
                     return;
                 }
 
@@ -62,7 +62,7 @@ namespace GlurrrBotDiscord2.Commands
                 if(quoteSplit.Count() < 3)
                 {
                     Console.WriteLine("No message to attach");
-                    await args.Channel.SendMessageAsync("Enter a message in quotes");
+                    await args.Channel.SendMessageAsync(Character.getText("noquotes"));
                     return;
                 }
 
@@ -70,7 +70,7 @@ namespace GlurrrBotDiscord2.Commands
                 {
                     await file.WriteAsync(quoteSplit[1]);
                     Console.WriteLine("Set " + args.MentionedUsers[0].Username + "'s welcome message to " + quoteSplit[1]);
-                    await args.Channel.SendMessageAsync("Set " + args.MentionedUsers[0].Username + "'s welcome message to " + quoteSplit[1]);
+                    await args.Channel.SendMessageAsync(Character.getText("setwelcome", args.MentionedUsers[0].Username, quoteSplit[1]));
                 }
             }
 
@@ -81,14 +81,14 @@ namespace GlurrrBotDiscord2.Commands
                 if(args.MentionedUsers.Count == 0)
                 {
                     Console.WriteLine("No user to remove message");
-                    await args.Channel.SendMessageAsync("No user to put message with");
+                    await args.Channel.SendMessageAsync(Character.getText("nouser"));
                     return;
                 }
 
                 File.Delete(@"welcomemessages/" + args.MentionedUsers[0].Id + ".txt");
 
                 Console.WriteLine("Welcome message for " + args.MentionedUsers[0].Username + " removed");
-                await args.Channel.SendMessageAsync("Welcome message for " + args.MentionedUsers[0].Username + " removed");
+                await args.Channel.SendMessageAsync(Character.getText("removewelcome", args.MentionedUsers[0].Username));
             }
         }
     }
