@@ -26,14 +26,14 @@ namespace GlurrrBotDiscord2.Commands
             if(cooldown.CompareTo(DateTime.UtcNow) > 0)
             {
                 Console.WriteLine("Ratelimit locked");
-                await args.Channel.SendMessageAsync("You trying to get rid of me already?");
+                await args.Channel.SendMessageAsync(Character.getText("characterdelay", (cooldown - DateTime.UtcNow).Minutes.ToString()));
                 return;
             }
 
             string chrName = args.Message.Content.Substring(23);
             chrName = chrName.Remove(chrName.Length - 2);
             Console.WriteLine("Loading: " + chrName);
-            await args.Channel.SendMessageAsync("Loading " + chrName + "...");
+            await args.Channel.SendMessageAsync(Character.getText("loadchr.", chrName));
 
             string line;
             string[] subLine;
@@ -113,7 +113,7 @@ namespace GlurrrBotDiscord2.Commands
             {
                 Console.WriteLine("File did not exist");
                 Console.WriteLine(e.Message);
-                await args.Channel.SendMessageAsync(chrName + " does not exist.");
+                await args.Channel.SendMessageAsync(Character.getText("nochr", chrName));
                 return;
             }
             catch(Exception e)
@@ -126,7 +126,7 @@ namespace GlurrrBotDiscord2.Commands
             cooldown = DateTime.UtcNow.AddMinutes(20);
             Console.WriteLine(cooldown);
 
-            await args.Channel.SendMessageAsync(chrName + " loaded successfully.");
+            await args.Channel.SendMessageAsync(Character.getText("loadedchr", chrName));
         }
     }
 }

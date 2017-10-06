@@ -34,11 +34,11 @@ namespace GlurrrBotDiscord2
                 await args.Message.RespondAsync(Character.getText("anime"));
             }
 
-            if(msg.Contains("picture"))
+            /*if(msg.Contains("picture"))
             {
                 Console.WriteLine("Running Picture (MessageCreated)");
                 await AnimePicture.runCommand(args);
-            }
+            }*/
         }
 
         public static async Task presenceUpdatedCommand(PresenceUpdateEventArgs args)
