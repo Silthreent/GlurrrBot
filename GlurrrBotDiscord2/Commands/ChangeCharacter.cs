@@ -50,7 +50,7 @@ namespace GlurrrBotDiscord2.Commands
 
                     while((line = await file.ReadLineAsync()) != null)
                     {
-                        subLine = line.Split(':');
+                        subLine = line.Split('|');
                         if(subLine.Length == 2)
                         {
                             try

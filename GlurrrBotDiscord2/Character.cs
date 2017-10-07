@@ -40,7 +40,7 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine("Loading default phrases");
                 while((line = await file.ReadLineAsync()) != null)
                 {
-                    subline = line.Split(':');
+                    subline = line.Split('|');
                     if(subline.Length == 2)
                     {
                         Console.WriteLine("Loading default phrase: " + line);
@@ -59,7 +59,7 @@ namespace GlurrrBotDiscord2
 
             while((line = await file.ReadLineAsync()) != null)
             {
-                subline = line.Split(':');
+                subline = line.Split('|');
                 text[subline[0]] = subline[1];
             }
         }

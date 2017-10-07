@@ -85,7 +85,7 @@ namespace GlurrrBotDiscord2
                 {
                     while((line = await file.ReadLineAsync()) != null)
                     {
-                        subLine = line.Split(':');
+                        subLine = line.Split('|');
                         if(subLine.Length == 2)
                         {
                             if(subLine[0] == "name" || subLine[0] == "altname")
@@ -128,9 +128,10 @@ namespace GlurrrBotDiscord2
             if(await checkFixedCommands(e))
                 return;
 
+            Console.WriteLine(e.Message.Content.ToLower());
             foreach(string name in Character.callNames)
             {
-                if(e.Message.Content.ToLower().Contains(name))
+                if(e.Message.Content.ToLower().Contains(" " + name) || e.Message.Content.ToLower().Contains(" " + name + " ") || e.Message.Content.ToLower().Contains(name + " "))
                 {
                     Console.WriteLine("Glurrr awakened");
                     await MessageCreated(e);
