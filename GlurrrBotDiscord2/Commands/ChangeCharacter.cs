@@ -33,7 +33,7 @@ namespace GlurrrBotDiscord2.Commands
             string chrName = args.Message.Content.Substring(23);
             chrName = chrName.Remove(chrName.Length - 2);
             Console.WriteLine("Loading: " + chrName);
-            await args.Channel.SendMessageAsync(Character.getText("loadchrs", chrName));
+            await args.Channel.SendMessageAsync(Character.getText("loadchr", chrName));
 
             string line;
             string[] subLine;
