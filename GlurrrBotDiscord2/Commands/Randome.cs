@@ -156,7 +156,6 @@ namespace GlurrrBotDiscord2.Commands
             }
 
         // Roll for randome
-        // TODO: Dont roll if the list is empty
             if(commandFound == false && msg.Contains("roll"))
             {
                 commandFound = true;

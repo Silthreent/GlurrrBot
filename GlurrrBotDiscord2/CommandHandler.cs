@@ -2,10 +2,6 @@
 using DSharpPlus.EventArgs;
 using GlurrrBotDiscord2.Commands;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GlurrrBotDiscord2
@@ -26,6 +22,12 @@ namespace GlurrrBotDiscord2
             {
                 Console.WriteLine("Running Welcome (MessageCreated)");
                 await WelcomeMessage.updateMessages(args);
+            }
+
+            if(msg.Contains("kys"))
+            {
+                Console.WriteLine("Running Keep Yourself Safe (MessageCreated)");
+                await KeepYourselfSafe.runCommand(args);
             }
 
             if(msg.Contains("anime"))

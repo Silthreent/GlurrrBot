@@ -4,18 +4,13 @@ using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
 using GlurrrBotDiscord2.Commands;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GlurrrBotDiscord2
 {
     class Program
     {
-        // TODO: Change some data to be in a different file, such as client.
-        // TODO: Have any messages read from a global source, based on character set
         //public const ulong MATT_ID = 134852512611172352;
         //public const ulong DAVID_ID = 135498846494130177;
         // os.remove("characters/yuri.chr")
@@ -98,7 +93,7 @@ namespace GlurrrBotDiscord2
                             }
                             if(subLine[0] == "game")
                             {
-                                await Program.discord.UpdateStatusAsync(game: new Game(" " + subLine[1]));
+                                await Program.discord.UpdateStatusAsync(game: new Game(subLine[1]));
                             }
                         }
                         else if(line == "#Text")
@@ -125,10 +120,11 @@ namespace GlurrrBotDiscord2
 
         private static async Task onMessageCreated(MessageCreateEventArgs e)
         {
+            Console.WriteLine(e.Message.Content.ToLower());
+
             if(await checkFixedCommands(e))
                 return;
 
-            Console.WriteLine(e.Message.Content.ToLower());
             foreach(string name in Character.callNames)
             {
                 if(e.Message.Content.ToLower().Contains(" " + name) || e.Message.Content.ToLower().Contains(" " + name + " ") || e.Message.Content.ToLower().Contains(name + " "))
@@ -177,7 +173,7 @@ namespace GlurrrBotDiscord2
             {
                 await discord.EditCurrentUserAsync(username: name, avatar: new FileStream("characters/pictures/" + avatar, FileMode.Open));
 
-                await discord.UpdateStatusAsync(game: new Game(" " + game));
+                await discord.UpdateStatusAsync(game: new Game(game));
 
                 if(roleName != null)
                 {
