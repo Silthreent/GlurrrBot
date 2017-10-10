@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
+using DSharpPlus.VoiceNext;
 using GlurrrBotDiscord2.Commands;
 using System;
 using System.IO;
@@ -19,8 +20,6 @@ namespace GlurrrBotDiscord2
         // yuri.chr deleted successfully.
 
         public static DiscordClient discord;
-
-        static event AsyncEventHandler<MessageCreateEventArgs> MessageCreated;
 
         static void Main(string[] args)
         {
@@ -54,11 +53,12 @@ namespace GlurrrBotDiscord2
             }
 
             discord.MessageCreated += onMessageCreated;
-            MessageCreated += CommandHandler.messageCreatedCommand;
 
-            discord.PresenceUpdated += CommandHandler.presenceUpdatedCommand;
+            discord.PresenceUpdated += CommandHandler.presenceUpdated;
 
             discord.GuildAvailable += init;
+
+            discord.UseVoiceNext();
 
             await discord.ConnectAsync();
 
@@ -109,6 +109,7 @@ namespace GlurrrBotDiscord2
             {
                 Console.WriteLine("Can't find character file");
                 Console.WriteLine(ex.Message);
+
                 Character.addCallName("glurrr");
                 await e.Guild.GetDefaultChannel().SendMessageAsync("Can't load .chr file; added \"glurrr\" as a default call");
                 return;
@@ -130,7 +131,9 @@ namespace GlurrrBotDiscord2
                 if(e.Message.Content.ToLower().Contains(" " + name) || e.Message.Content.ToLower().Contains(" " + name + " ") || e.Message.Content.ToLower().Contains(name + " "))
                 {
                     Console.WriteLine("Glurrr awakened");
-                    await MessageCreated(e);
+                    
+                    Task msgCreate = new Task(async () => await CommandHandler.messageCreated(e));
+                    msgCreate.Start();
                     return;
                 }
             }
@@ -138,7 +141,9 @@ namespace GlurrrBotDiscord2
             if(e.Message.Content.Contains("ぐるる"))
             {
                 Console.WriteLine("グルーラーが目を覚ました");
-                await MessageCreated(e);
+
+                Task msgCreate = new Task(async () => await CommandHandler.messageCreated(e));
+                msgCreate.Start();
                 return;
             }
         }
@@ -147,7 +152,8 @@ namespace GlurrrBotDiscord2
         {
             if(e.Message.Content.StartsWith("renpy.file(\"characters/") && e.Message.Content.EndsWith(")"))
             {
-                await ChangeCharacter.runCommand(e);
+                Task changeChr = new Task(async () => await ChangeCharacter.runCommand(e));
+                changeChr.Start();
                 return true;
             }
 
