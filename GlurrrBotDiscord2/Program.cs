@@ -2,7 +2,9 @@
 using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using DSharpPlus.Exceptions;
+using DSharpPlus.Net.WebSocket;
 using DSharpPlus.VoiceNext;
+using DSharpPlus.VoiceNext.Codec;
 using GlurrrBotDiscord2.Commands;
 using System;
 using System.IO;
@@ -19,6 +21,8 @@ namespace GlurrrBotDiscord2
         // monika.chr does not exist.
         // yuri.chr deleted successfully.
 
+        const string VERSION_NUMBER = "0.9.1-12";
+
         public static DiscordClient discord;
 
         static void Main(string[] args)
@@ -28,6 +32,7 @@ namespace GlurrrBotDiscord2
 
         static async Task MainAsync(string[] args)
         {
+            Console.WriteLine("Running GlurrrBot V" + VERSION_NUMBER);
             try
             {
                 using(StreamReader sr = new StreamReader("botcode.txt"))
@@ -52,13 +57,23 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine(e.Message);
             }
 
+            PoemGameDictionary.buildDictionary();
+
             discord.MessageCreated += onMessageCreated;
 
             discord.PresenceUpdated += CommandHandler.presenceUpdated;
+            //discord.VoiceStateUpdated += voiceStateUpdated;
+
+            discord.MessageReactionAdded += CommandHandler.reactionAdded;
 
             discord.GuildAvailable += init;
 
-            discord.UseVoiceNext();
+            //discord.SetWebSocketClient<WebSocketSharpClient>();
+            VoiceNextConfiguration vcfg = new VoiceNextConfiguration()
+            {
+                EnableIncoming = false
+            };
+            //discord.UseVoiceNext(vcfg);
 
             await discord.ConnectAsync();
 
@@ -131,10 +146,7 @@ namespace GlurrrBotDiscord2
                 if(e.Message.Content.ToLower().Contains(" " + name) || e.Message.Content.ToLower().Contains(" " + name + " ") || e.Message.Content.ToLower().Contains(name + " "))
                 {
                     Console.WriteLine("Glurrr awakened");
-                    
-                    Task msgCreate = new Task(async () => await CommandHandler.messageCreated(e));
-                    msgCreate.Start();
-                    return;
+                    await CommandHandler.messageCreated(e);
                 }
             }
 
@@ -142,16 +154,43 @@ namespace GlurrrBotDiscord2
             {
                 Console.WriteLine("グルーラーが目を覚ました");
 
-                Task msgCreate = new Task(async () => await CommandHandler.messageCreated(e));
-                msgCreate.Start();
+                await CommandHandler.messageCreated(e);
                 return;
             }
+        }
+
+        private static async Task voiceStateUpdated(VoiceStateUpdateEventArgs e)
+        {
+            if(e.User.IsBot == true)
+            {
+                Console.WriteLine("Bot moved");
+                return;
+            }
+            if(e.Channel == null)
+            {
+                Console.WriteLine(e.User.Username + " left a voice channel");
+                try
+                {
+                    discord.GetVoiceNextClient().GetConnection(e.Guild).Disconnect();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+                return;
+            }
+
+            Console.WriteLine(e.User.Username + " joined voice channel " + e.Channel.Name);
+
+            Task voiceStateUpdated = new Task(async () => await CommandHandler.voiceStateUpdated(e));
+            voiceStateUpdated.Start();
         }
 
         private static async Task<bool> checkFixedCommands(MessageCreateEventArgs e)
         {
             if(e.Message.Content.StartsWith("renpy.file(\"characters/") && e.Message.Content.EndsWith(")"))
             {
+                //await ChangeCharacter.runCommand(e);
                 Task changeChr = new Task(async () => await ChangeCharacter.runCommand(e));
                 changeChr.Start();
                 return true;
@@ -166,7 +205,7 @@ namespace GlurrrBotDiscord2
                     Color = DiscordColor.DarkRed,
                 };
 
-                await e.Channel.SendMessageAsync("", false, embed);
+                await e.Channel.SendMessageAsync(embed: embed);
                 return true;
             }
 

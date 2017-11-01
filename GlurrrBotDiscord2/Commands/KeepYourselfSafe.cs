@@ -9,29 +9,36 @@ namespace GlurrrBotDiscord2.Commands
     {
         public static async Task runCommand(MessageCreateEventArgs args)
         {
-            DiscordMessage msg = null;
-            var msgs = await args.Channel.GetMessagesAsync(5);
-
-            if(args.Message.MentionedUsers.Count == 1)
+            try
             {
-                foreach(DiscordMessage i in msgs)
+                DiscordMessage msg = null;
+                var msgs = await args.Channel.GetMessagesAsync(5);
+
+                if(args.Message.MentionedUsers.Count == 1)
                 {
-                    if(i.Author == args.Message.MentionedUsers[0])
+                    foreach(DiscordMessage i in msgs)
                     {
-                        Console.WriteLine("Telling " + args.Message.MentionedUsers[0].Username + " to keep themself safe");
-                        msg = i;
-                        break;
+                        if(i.Author == args.Message.MentionedUsers[0])
+                        {
+                            Console.WriteLine("Telling " + args.Message.MentionedUsers[0].Username + " to keep themself safe");
+                            msg = i;
+                            break;
+                        }
                     }
                 }
+                else
+                {
+                    msg = msgs[1];
+                }
+                Console.WriteLine("Found message: " + msg.Content);
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(Program.discord, ":regional_indicator_k:"));
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(Program.discord, ":regional_indicator_y:"));
+                await msg.CreateReactionAsync(DiscordEmoji.FromName(Program.discord, ":regional_indicator_s:"));
             }
-            else
+            catch(Exception e)
             {
-                msg = msgs[1];
+                Console.WriteLine(e.Message);
             }
-            Console.WriteLine("Found message: " + msg.Content);
-            await msg.CreateReactionAsync(DiscordEmoji.FromName(Program.discord, ":regional_indicator_k:"));
-            await msg.CreateReactionAsync(DiscordEmoji.FromName(Program.discord, ":regional_indicator_y:"));
-            await msg.CreateReactionAsync(DiscordEmoji.FromName(Program.discord, ":regional_indicator_s:"));
         }
     }
 }

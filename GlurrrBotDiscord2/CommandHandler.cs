@@ -9,6 +9,8 @@ namespace GlurrrBotDiscord2
 {
     public class CommandHandler
     {
+        static VoiceNextConnection voiceConnection;
+
         public static async Task messageCreated(MessageCreateEventArgs args)
         {
             string msg = args.Message.Content.ToLower();
@@ -37,6 +39,12 @@ namespace GlurrrBotDiscord2
                 await args.Message.RespondAsync(Character.getText("anime"));
             }
 
+            if(msg.Contains("write") && msg.Contains("poem"))
+            {
+                Console.WriteLine("Running Poem Game (MessageCreated)");
+                await PoemGame.runCommand(args);
+            }
+
             /*if(msg.Contains("connect"))
             {
                 Task voiceConnect = new Task(async () =>
@@ -58,6 +66,31 @@ namespace GlurrrBotDiscord2
                 Console.WriteLine("User just came online, running command");
                 await WelcomeMessage.welcomeMessage(args);
             }
+        }
+
+        public static async Task reactionAdded(MessageReactionAddEventArgs args)
+        {
+            if(args.User.IsBot)
+                return;
+
+            if(args.Emoji.Name == "monika" || args.Emoji.Name == "sayori" || args.Emoji.Name == "natsuki" || args.Emoji.Name == "yuri")
+            {
+                await PoemGame.reactionAdded(args);
+            }
+        }
+
+        public static async Task voiceStateUpdated(VoiceStateUpdateEventArgs e)
+        {
+            try
+            {
+                await Program.discord.GetVoiceNextClient().ConnectAsync(e.Channel);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            Console.WriteLine("Voice connected");
         }
     }
 }

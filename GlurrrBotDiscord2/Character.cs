@@ -19,7 +19,7 @@ namespace GlurrrBotDiscord2
         {
             if(text.ContainsKey(key))
             {
-                return string.Format(text[key], format1);
+                return string.Format(text[key], format1, format2);
             }
             else
             {

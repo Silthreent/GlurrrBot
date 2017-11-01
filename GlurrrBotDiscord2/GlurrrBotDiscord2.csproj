@@ -41,6 +41,10 @@
       <HintPath>..\packages\DSharpPlus.VoiceNext.3.1.2\lib\net46\DSharpPlus.VoiceNext.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="DSharpPlus.WebSocket.WebSocketSharp, Version=3.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DSharpPlus.WebSocket.WebSocketSharp.3.1.2\lib\net46\DSharpPlus.WebSocket.WebSocketSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.5.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.5.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -87,8 +91,11 @@
     <Compile Include="Commands\AnimePicture.cs" />
     <Compile Include="Commands\ChangeCharacter.cs" />
     <Compile Include="Commands\KeepYourselfSafe.cs" />
+    <Compile Include="Commands\PoemGame.cs" />
     <Compile Include="Commands\Randome.cs" />
     <Compile Include="Commands\WelcomeMessage.cs" />
+    <Compile Include="PoemGameDictionary.cs" />
+    <Compile Include="PoemWord.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
