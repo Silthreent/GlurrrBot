@@ -147,6 +147,7 @@ namespace GlurrrBotDiscord2
                 {
                     Console.WriteLine("Glurrr awakened");
                     await CommandHandler.messageCreated(e);
+                    break;
                 }
             }
 

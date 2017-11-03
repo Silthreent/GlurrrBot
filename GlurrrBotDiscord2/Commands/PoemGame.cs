@@ -11,6 +11,7 @@ namespace GlurrrBotDiscord2.Commands
     class PoemGame
     {
         const string SPACING = "                 ";
+        const string JUST_MONIKA = "0000000000000000000000";
         static Random random;
         static DiscordMessage currentMessage;
         static bool running = false;
@@ -19,6 +20,8 @@ namespace GlurrrBotDiscord2.Commands
         static int lastGirl;
         static int numRounds = 20;
         static int currentRound;
+        static int monikaCounter;
+        static bool monikaMode;
 
         public static async Task runCommand(MessageCreateEventArgs args)
         {
@@ -43,12 +46,13 @@ namespace GlurrrBotDiscord2.Commands
                 await args.Channel.SendMessageAsync(Character.getText("writepoem"));
 
                 random = new Random();
-
                 currentWords = new PoemWord[4];
                 currentFavors = new int[3];
                 numRounds = 20;
                 currentRound = 1;
                 lastGirl = 0;
+                monikaCounter = 0;
+                monikaMode = false;
 
                 currentMessage = await args.Channel.SendMessageAsync(Character.getText("loadingpoemgame"));
                 
@@ -72,18 +76,30 @@ namespace GlurrrBotDiscord2.Commands
             Console.WriteLine("Interacted with Poem Game");
             if(args.Emoji.Name == "monika")
             {
+                monikaCounter++;
+                if(monikaCounter >= 3)
+                    setMonikaMode();
                 interactWord(0);
             }
             else if(args.Emoji.Name == "sayori")
             {
+                monikaCounter = 0;
+                if(monikaMode)
+                    await args.Message.DeleteOwnReactionAsync(args.Emoji);
                 interactWord(1);
             }
             else if(args.Emoji.Name == "natsuki")
             {
+                monikaCounter = 0;
+                if(monikaMode)
+                    await args.Message.DeleteOwnReactionAsync(args.Emoji);
                 interactWord(2);
             }
             else if(args.Emoji.Name == "yuri")
             {
+                monikaCounter = 0;
+                if(monikaMode)
+                    await args.Message.DeleteOwnReactionAsync(args.Emoji);
                 interactWord(3);
             }
             else
@@ -99,6 +115,20 @@ namespace GlurrrBotDiscord2.Commands
         {
             if(desc == "")
                 desc = "|- " + currentWords[0].Word + " -|- " + currentWords[1].Word + " -|- " + currentWords[2].Word + " -|- " + currentWords[3].Word + " -|";
+
+            if(monikaMode)
+            {
+                await currentMessage.ModifyAsync("**Doki Just Monika Game**\n" + JUST_MONIKA.Remove(currentRound) + "/20\n" + desc + "\n\n"
+                    + "       "
+                    + PoemGameDictionary.getEmoji(0)
+                    + SPACING
+                    + PoemGameDictionary.getEmoji(0)
+                    + SPACING
+                    + PoemGameDictionary.getEmoji(0)
+                    + SPACING
+                    + PoemGameDictionary.getEmoji(0));
+                return;
+            }
 
             if(lastGirl == 0)
                 await currentMessage.ModifyAsync("**Doki Doki Poem Game**\n" + currentRound + "/20\n" + desc + "\n\n"
@@ -233,6 +263,9 @@ namespace GlurrrBotDiscord2.Commands
 
                 options[choice] = false;
 
+                if(monikaMode)
+                    continue;
+
                 for(int x = 0; x < 4; x++)
                 {
                     if(x != c)
@@ -251,6 +284,12 @@ namespace GlurrrBotDiscord2.Commands
 
         static void interactWord(int word)
         {
+            if(monikaMode && word != 0)
+            {
+                lastGirl = random.Next(0, 4);
+                return;
+            }
+
             for(int c = 0; c < 3; c++)
             {
                 currentFavors[c] += currentWords[word].getFavor(c);
@@ -284,6 +323,13 @@ namespace GlurrrBotDiscord2.Commands
         {
             string builder = "";
             int highestFavor = 0;
+
+            if(monikaMode)
+            {
+                buildMessage(Character.getText("monikapoem"));
+                running = false;
+                return;
+            }
 
             for(int c = 0; c < 3; c++)
             {
@@ -319,6 +365,20 @@ namespace GlurrrBotDiscord2.Commands
             buildMessage(builder);
 
             running = false;
+        }
+
+        public static void setMonikaMode(bool mode = true)
+        {
+            Console.WriteLine("Just Monika.");
+            monikaMode = mode;
+        }
+
+        public static bool MonikaMode
+        {
+            get
+            {
+                return monikaMode;
+            }
         }
     }
 }

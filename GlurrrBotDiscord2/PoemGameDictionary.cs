@@ -1,4 +1,5 @@
 ﻿using DSharpPlus.Entities;
+using GlurrrBotDiscord2.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ namespace GlurrrBotDiscord2
 {
     class PoemGameDictionary
     {
+        const string MONIKA = "Monika";
         static Random random;
         static List<PoemWord> sWords;
         static List<PoemWord> nWords;
@@ -63,6 +65,24 @@ namespace GlurrrBotDiscord2
 
         public static PoemWord getRandomWord(int girl = 0)
         {
+            if(PoemGame.MonikaMode)
+            {
+                string builder = "";
+                for(int c = 0; c < MONIKA.Length; c++)
+                {
+                    if(random.Next(0, 3) == 0)
+                    {
+                        builder += MONIKA[c];
+                    }
+                    else
+                    {
+                        builder += " ";
+                    }
+                }
+
+                return new PoemWord(builder, 0, 0, 0);
+            }
+
             if(girl == 0)
             {
                 switch(random.Next(1, 4))
@@ -136,6 +156,7 @@ namespace GlurrrBotDiscord2
             }
 
             return DiscordEmoji.FromName(Program.discord, ":thinking:");
-        } 
+        }
+
     }
 }
