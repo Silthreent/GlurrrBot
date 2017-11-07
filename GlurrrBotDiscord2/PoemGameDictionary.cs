@@ -72,11 +72,11 @@ namespace GlurrrBotDiscord2
                 {
                     if(random.Next(0, 3) == 0)
                     {
-                        builder += MONIKA[c];
+                        builder += " ";
                     }
                     else
                     {
-                        builder += " ";
+                        builder += MONIKA[c];
                     }
                 }
 
