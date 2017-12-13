@@ -58,6 +58,7 @@ namespace GlurrrBotDiscord2
             }
 
             PoemGameDictionary.buildDictionary();
+            SQLManager.createConnection();
 
             discord.MessageCreated += onMessageCreated;
 
@@ -160,7 +161,7 @@ namespace GlurrrBotDiscord2
             }
         }
 
-        private static async Task voiceStateUpdated(VoiceStateUpdateEventArgs e)
+        /*private static async Task voiceStateUpdated(VoiceStateUpdateEventArgs e)
         {
             if(e.User.IsBot == true)
             {
@@ -185,7 +186,7 @@ namespace GlurrrBotDiscord2
 
             Task voiceStateUpdated = new Task(async () => await CommandHandler.voiceStateUpdated(e));
             voiceStateUpdated.Start();
-        }
+        }*/
 
         private static async Task<bool> checkFixedCommands(MessageCreateEventArgs e)
         {

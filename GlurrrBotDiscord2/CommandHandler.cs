@@ -45,6 +45,12 @@ namespace GlurrrBotDiscord2
                 await PoemGame.runCommand(args);
             }
 
+            if(msg.Contains("get"))
+            {
+                Console.WriteLine("Running Message Getter (MessageCreated)");
+                await MessageSaver.getMessage(args);
+            }
+
             /*if(msg.Contains("connect"))
             {
                 Task voiceConnect = new Task(async () =>
@@ -76,6 +82,12 @@ namespace GlurrrBotDiscord2
             if(args.Emoji.Name == "monika" || args.Emoji.Name == "sayori" || args.Emoji.Name == "natsuki" || args.Emoji.Name == "yuri")
             {
                 await PoemGame.reactionAdded(args);
+            }
+
+            if(args.Emoji.Name == "glurrr")
+            {
+                Console.WriteLine("Saving message");
+                await MessageSaver.reactionAdded(args);
             }
         }
 
